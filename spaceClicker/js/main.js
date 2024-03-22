@@ -1,24 +1,74 @@
-
-
 // Define initial variables
 let totalSpaceDust = 0;
 let totalComet = 0;
+let totalAsteroid = 0;
+
 let spaceDust = 10000;
 let comet = 0;
+let asteroid = 0;
+
 let clickPower = 1;
 let autoGenerateSpaceDustRate= 1; // Set auto generation rate to 20 per second
 let autoGenerateCometRate = 0;
+let autoGenerateAsteroidRate = 0;
 
 let clickPowerUpgradeCost = 10;
-let autoGenerateUpgradeCost = 20;
+let autoGenerateUpgradeCostSpaceDust = 20;
 let autoGenerateUpgradeCostComet= 500;
+let autoGenerateUpgradeCostAsteroid = 500;
+
 let autoGenerateCometEnabled = true;
+let autoGenerateAsteroidEnabled = true;
+
 let xp = 0;
 let level = 1;
-let perkPoints = 20;
+let perkPoints = 200;
+
+let spaceDustSkillPoint = 0;
+let celestialObjectSkillPoint = 0;
+
+
+let xpSpaceDust = 0;
+let levelSpaceDust = 1;
+
+let xpCelestialObjects = 0;
+let levelCelestialObjects = 1;
+
 let cometUnlocked = false;
-let meteorsUnlocked = false;
 let asteroidsUnlocked = false;
+
+let spaceDustSkill = [
+    {
+        name: "Reduce AutoGenerateRate Upgrade Cost 0/5",
+        description: "This button adds 0 out of 5 items",
+        skillPointCost: 1,
+        innerLevel: 0,
+        maxInnerLevel: 5,
+        tier: "C",
+    },
+    {
+        name: "test",
+        description: "This button adds 0 out of 5 items",
+        skillPointCost: 1,
+        maxInnerLevel:5,
+        tier: "C",
+    },
+    {
+        name: "tedgdfgdgffst",
+        description: "This button adds 0 out of 5 items",
+        skillPointCost: 1,
+        maxInnerLevel:5,
+        tier: "C",
+    },
+    {
+        name: "test",
+        description: "This button adds 0 out of 5 items",
+        skillPointCost: 1,
+        maxInnerLevel:5,
+        tier: "B",
+    }
+]
+
 let upgradeCelestialObject = [
     {
         name: "Comet",
@@ -26,29 +76,144 @@ let upgradeCelestialObject = [
 
     },
     {
-        name: "Meteor",
-        cost: 20,
-
-    },
-    {
         name: "Asteroid",
         cost: 30,
 
+    }
+]
+let celestialObjectSkill = [
+    {
+        name: "Reduce AutoGenerateRate Upgrade Cost 0/5",
+        description: "This button adds 0 out of 5 items",
+        skillPointCost: 1,
+        innerLevel: 0,
+        maxInnerLevel: 5,
+        tier: "C",
     },
     {
-        name: "Moon",
-        cost: 50,
-
+        name: "",
+        description: "This button adds 0 out of 5 items",
+        skillPointCost: 1,
+    }
+    // <div class="tooltip">
+        //      <button class="button" title="This button adds 0 out of 5 items">Add 0/5</button>
+        //      <span class="tooltiptext">This button adds 0 out of 5 items</span>
+        // </div>
+]
+let solarSystemSkill = [
+    {
+        name: "solar system",
+        description: "This button adds 0 out of 5 items",
+        skillPointCost: 1,
+        innerLevel: 0,
+        maxInnerLevel: 5,
+        tier: "C",
     }
 ]
 
+function showSpaceDustColumn() {
+    let ssd = document.getElementById("spaceDustSkill");
+    ssd.classList.remove("hide");
+    document.getElementById("celestialObjectSkill").classList.add("hide");
+    document.getElementById("solarSystemSkill").classList.add("hide");
+}
+
+function showSpaceDustSkill() {
+    let sdsTableBody = document.getElementById("spaceDustSkillTableBody");
+    sdsTableBody.innerHTML = ""; // Clear previous content before updating
+    spaceDustSkill.forEach(skill => {
+        // Create a new row for each skill
+        let row = document.createElement("tr");
+        let cell = document.createElement("td");
+        console.log(skill)
+        
+        console.log(row)
+        // Construct HTML for the skill button and tooltip
+        cell.innerHTML = `
+            <div class="skillInformation">
+                <button class="button btn btn-secondary" data-toggle="tooltip">${skill.name}</button>
+                <span class="hover-text">${skill.description}</span>
+            </div>`;
+            
+        row.appendChild(cell);
+        console.log(cell)
+        // Append the row to the table body
+        sdsTableBody.appendChild(row);
+    });
+}
+
+showSpaceDustSkill();
+
+
+/// function showing perk branch
 function showUpgradeCelestialObject() {
-    let cob = document.getElementById("celestialObjectsBranch")
+    let cob = document.getElementById("celestialObjectBranch")
     upgradeCelestialObject.forEach(upgrade => {
-        cob.innerHTML += `<div class="perk" onclick="unlockComet()" data-perk="${upgrade.name}">${upgrade.name} - cost : ${upgrade.cost}</div>`
+        cob.innerHTML += `<div class="perk" onclick="unlock${upgrade.name}()" data-perk="${upgrade.name}">${upgrade.name} - cost : ${upgrade.cost}</div>`
     });
 }
 showUpgradeCelestialObject();
+
+function showCelestialObjectColumn() {
+    let ssd = document.getElementById("celestialObjectSkill");
+    ssd.classList.remove("hide");
+    document.getElementById("spaceDustSkill").classList.add("hide");
+    document.getElementById("solarSystemSkill").classList.add("hide");
+}
+
+function showCelestialObjectSkill() {
+    let sdsTableBody = document.getElementById("celestialObjectSkillTableBody");
+    sdsTableBody.innerHTML = ""; // Clear previous content before updating
+    spaceDustSkill.forEach(skill => {
+        // Create a new row for each skill
+        let row = document.createElement("tr");
+        let cell = document.createElement("td");
+        // Construct HTML for the skill button and tooltip
+        cell.innerHTML = `
+            <div class="">
+                <button class="button" style="font-size: 10px">${skill.name}</button>
+                <span class="">${skill.description}</span>
+            </div>`;
+        row.appendChild(cell);
+        // Append the row to the table body
+        sdsTableBody.appendChild(row);
+    });
+}
+/// reliquat pour verifier
+// function showCelestialObjectSkill() {
+//     let cob = document.getElementById("celestialObjectSkill")
+//     celestialObjectSkill.forEach(skill => {
+//         cob.innerHTML += `<div class="skill" onclick="unlock${skill.name}()" data-skill="${skill.name}">${skill.name}</div>`
+//     });
+// }
+showCelestialObjectSkill();
+
+function showSolarSystemColumn() {
+    let ssd = document.getElementById("solarSystemSkill");
+    ssd.classList.remove("hide");
+    document.getElementById("celestialObjectSkill").classList.add("hide");
+    document.getElementById("spaceDustSkill").classList.add("hide");
+}
+
+function showSolarSystemSkill() {
+    let sdsTableBody = document.getElementById("solarSystemSkillTableBody");
+    sdsTableBody.innerHTML = ""; // Clear previous content before updating
+    solarSystemSkill.forEach(skill => {
+        // Create a new row for each skill
+        let row = document.createElement("tr");
+        let cell = document.createElement("td");
+        // Construct HTML for the skill button and tooltip
+        cell.innerHTML = `
+            <div class="">
+                <button class="button" style="font-size: 10px">${skill.name}</button>
+                <span class="">${skill.description}</span>
+            </div>`;
+        row.appendChild(cell);
+        // Append the row to the table body
+        sdsTableBody.appendChild(row);
+    });
+}
+showSolarSystemSkill();
 
 // Function to update score
 function updateSpaceDust() {
@@ -57,6 +222,10 @@ function updateSpaceDust() {
 
 function updateComet(){
     document.getElementById("cometQuantity").innerText = "Comet: " + Math.round(comet);
+}
+
+function updateAsteroid(){
+    document.getElementById("asteroidQuantity").innerText = "Asteroid: " + Math.round(asteroid);
 }
 
 function updatePerkPoints() {
@@ -76,6 +245,18 @@ function updateXPBar() {
 // Function to update current level
 function updateCurrentLevel() {
     document.getElementById("currentLevel").innerText = "Level: " + level;
+}
+
+function updateSpaceDustXPBar() {
+    let maxXp = 5 * Math.pow(3, levelSpaceDust - 1); // Max XP for the current level
+    let xpPercentage = (xpSpaceDust / maxXp) * 100;
+    if (xpPercentage > 100) xpPercentage = 100; // Cap at 100%
+    document.getElementById("xpFillSpaceDust").style.width = xpPercentage + "%";
+    // document.getElementById("xpDetails").innerText = "XP: " + xp + " / " + maxXp;
+}
+
+function updateSpaceDustCurrentlevel() {
+    document.getElementById("currentLevelSpaceDust").innerText = "Level: " + levelSpaceDust;
 }
 
 // Function to handle click events
@@ -100,7 +281,6 @@ function autoGenerateSpaceDust() {
     xp += autoGenerateSpaceDustRate / 10;
     
     updateSpaceDust();
-
 }
 
 function spaceDustConsumption() {
@@ -126,8 +306,25 @@ function autoGenerateComet() {
     updateComet();
 }
 
-function disableCometAutoGeneration() {
+function cometConsumption () {
+    let coc = document.getElementById("cometConsumption");
+    coc.innerText = "Comet Consumption: " + Math.round(autoGenerateAsteroidRate*10) + " per second";
+}
 
+function autoGenerateAsteroid() {
+    if(comet<autoGenerateAsteroidRate*10) {
+        autoGenerateAsteroidEnabled = false;
+        document.getElementById("disableAsteroidAutoGeneration").innerText = "Enable Asteroid Auto Generation";
+        document.getElementById("disableAsteroidAutoGeneration").classList.add("buttonEnable");
+        document.getElementById("disableAsteroidAutoGeneration").classList.remove("buttonDisable");
+    }
+    if(autoGenerateAsteroidEnabled){
+        asteroid += autoGenerateAsteroidRate;
+    totalAsteroid += autoGenerateAsteroidRate;
+    }
+}
+
+function disableCometAutoGeneration() {
     autoGenerateCometEnabled = !autoGenerateCometEnabled;
     if(autoGenerateCometEnabled){
         document.getElementById("disableCometAutoGeneration").innerText = "Disable Comet Auto Generation";
@@ -138,6 +335,20 @@ function disableCometAutoGeneration() {
         document.getElementById("disableCometAutoGeneration").innerText = "Enable Comet Auto Generation";
         document.getElementById("disableCometAutoGeneration").classList.add("buttonEnable");
         document.getElementById("disableCometAutoGeneration").classList.remove("buttonDisable");
+    }
+}
+
+function disableAsteroidAutoGeneration() {
+    autoGenerateAsteroidEnabled = !autoGenerateAsteroidEnabled;
+    if(autoGenerateAsteroidEnabled){
+        document.getElementById("disableAsteroidAutoGeneration").innerText = "Disable Asteroid Auto Generation";
+        document.getElementById("disableAsteroidAutoGeneration").classList.add("buttonDisable");
+        document.getElementById("disableAsteroidAutoGeneration").classList.remove("buttonEnable");
+    }
+    if(!autoGenerateAsteroidEnabled){
+        document.getElementById("disableAsteroidAutoGeneration").innerText = "Enable Asteroid Auto Generation";
+        document.getElementById("disableAsteroidAutoGeneration").classList.add("buttonEnable");
+        document.getElementById("disableAsteroidAutoGeneration").classList.remove("buttonDisable");
     }
 }
 
@@ -154,14 +365,13 @@ function upgradeClickPower() {
 }
 
 
-
 // Function to upgrade auto generation
-function upgradeAutoGenerate() {
-    if (spaceDust >= autoGenerateUpgradeCost) {
-        spaceDust -= autoGenerateUpgradeCost;
+function upgradeAutoGenerateSpaceDust() {
+    if (spaceDust >= autoGenerateUpgradeCostSpaceDust) {
+        spaceDust -= autoGenerateUpgradeCostSpaceDust;
         autoGenerateSpaceDustRate++;
-        autoGenerateUpgradeCost = Math.round(autoGenerateUpgradeCost * 1.1); // Increase cost for next upgrade
-        document.getElementById("autoGenerateUpgrade").innerText = "Upgrade Auto Generation (Cost: " + autoGenerateUpgradeCost + " Space Dust)";
+        autoGenerateUpgradeCostSpaceDust = Math.round(autoGenerateUpgradeCostSpaceDust * 1.1); // Increase cost for next upgrade
+        document.getElementById("autoGenerateUpgrade").innerText = "Upgrade Auto Generation (Cost: " + autoGenerateUpgradeCostSpaceDust + " Space Dust)";
         document.getElementById("autoGenerateDisplay").innerText = autoGenerateSpaceDustRate + " per second";
         updateSpaceDust();
     }
@@ -175,6 +385,17 @@ function upgradeAutoGenerateComet() {
         document.getElementById("autoGenerateUpgradeComet").innerText = "Upgrade Auto Generation (Cost: " + autoGenerateUpgradeCostComet + " Space Dust)";
         document.getElementById("autoGenerateDisplayComet").innerText ="Current Auto Generation : "+ autoGenerateCometRate + " per second";
         updateComet();
+    }
+}
+
+function upgradeAutoGenerateAsteroid() {
+    if (spaceDust >= autoGenerateUpgradeCostAsteroid) {
+        spaceDust -= autoGenerateUpgradeCostAsteroid;
+        autoGenerateAsteroidRate++;
+        autoGenerateUpgradeCostAsteroid = Math.round(autoGenerateUpgradeCostAsteroid * 1.1); // Increase cost for next upgrade
+        document.getElementById("autoGenerateUpgradeAsteroid").innerText = "Upgrade Auto Generation (Cost: " + autoGenerateUpgradeCostAsteroid + " Space Dust)";
+        document.getElementById("autoGenerateDisplayAsteroid").innerText ="Current Auto Generation : "+ autoGenerateAsteroidRate + " per second";
+        updateAsteroid();
     }
 }
 
@@ -201,53 +422,34 @@ function unlockComet() {
         cometUnlocked = true;
         perkPoints -= 10;
         document.getElementById("perkPoints").innerText = "Perk Points: " + perkPoints;
-        document.getElementById("cometPerk").classList.add("unlocked");
         alert("You've unlocked Comet!");
         // Add functionality to space elements for Comet
         // For now, let's just display a message
         alert("Comet effect applied!");
-        document.getElementById("cometClicker").classList.remove("hide");
+        document.getElementById("cometGenerator").classList.remove("hide");
     } else {
         alert("You don't have enough perk points to unlock Comet or it's already unlocked.");
     }
 }
 
-// Function to unlock meteors perk
-function unlockMeteors() {
-    if (perkPoints >= 20 && !meteorsUnlocked) {
-        meteorsUnlocked = true;
-        perkPoints -= 20;
-        document.getElementById("perkPoints").innerText = "Perk Points: " + perkPoints;
-        document.getElementById("meteorsPerk").classList.add("unlocked");
-        alert("You've unlocked Meteors!");
-        // Add functionality to space elements for meteors
-        // For now, let's just display a message
-        alert("Meteors effect applied!");
-    } else {
-        alert("You don't have enough perk points to unlock Meteors or it's already unlocked.");
-    }
-}
-
 // Function to unlock asteroids perk
-function unlockAsteroids() {
+function unlockAsteroid() {
     if (perkPoints >= 30 && !asteroidsUnlocked) {
         asteroidsUnlocked = true;
         perkPoints -= 30;
         document.getElementById("perkPoints").innerText = "Perk Points: " + perkPoints;
-        document.getElementById("asteroidsPerk").classList.add("unlocked");
         alert("You've unlocked Asteroids!");
         // Add functionality to space elements for asteroids
         // For now, let's just display a message
         alert("Asteroids effect applied!");
+        document.getElementById("asteroidGenerator").classList.remove("hide");
     } else {
         alert("You don't have enough perk points to unlock Asteroids or it's already unlocked.");
     }
 }
 
 // Event listeners for unlocking perks
-document.getElementById("cometPerk").addEventListener("click", unlockComet);
-document.getElementById("meteorsPerk").addEventListener("click", unlockMeteors);
-document.getElementById("asteroidsPerk").addEventListener("click", unlockAsteroids);
+
 
 // Function to open specific page
 function openPage(pageName) {
@@ -261,15 +463,17 @@ function openPage(pageName) {
 // Set up click event listeners
 document.getElementById("clickButton").addEventListener("click", handleClick);
 document.getElementById("clickPowerUpgrade").addEventListener("click", upgradeClickPower);
-document.getElementById("autoGenerateUpgrade").addEventListener("click", upgradeAutoGenerate);
+document.getElementById("autoGenerateUpgrade").addEventListener("click", upgradeAutoGenerateSpaceDust);
 document.getElementById("autoGenerateUpgradeComet").addEventListener("click", upgradeAutoGenerateComet);
 
 function tick() {
     autoGenerateSpaceDust();
     autoGenerateComet();
+    autoGenerateAsteroid();
     checkLevelUp();
     updateXPBar();
     spaceDustConsumption();
+    cometConsumption();
 }
 
 // Set up auto-generation

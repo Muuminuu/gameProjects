@@ -25,6 +25,42 @@
     .buttonEnable{
         color: green;
     }
+
+    /** hoverable skill button */
+    .skillInformation {
+        position: relative;
+        display: inline-block;
+        width: 200px; /* Width of the tooltip */
+        height: 120px; /* Height of the tooltip */
+    }
+
+    .skillInformation .button {
+        width: 100%; /* Make the button width 100% of the tooltip width */
+        height: 100%; /* Make the button height 100% of the tooltip height */
+        padding: 10px; /* Adjust padding as needed */
+        text-align: center;
+    }
+
+    .skillInformation .hover-text {
+        visibility: hidden;
+        width: 120px; /* Width of the tooltip text */
+        background-color: black;
+        color: white;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px;
+        position: absolute;
+        z-index: 1;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .skillInformation:hover .hover-text {
+        visibility: visible;
+    }
+    
+
     #score {
         font-size: 24px;
         margin-bottom: 20px;
