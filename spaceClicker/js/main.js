@@ -37,35 +37,116 @@ let levelCelestialObjects = 1;
 let cometUnlocked = false;
 let asteroidsUnlocked = false;
 
-let spaceDustSkill = [
+///// idée à creuse -> passer par le tier pour l'affichage / refaire function associée a laffichage tableau
+let spaceDustSkillByTier = [
     {
-        name: "Reduce AutoGenerateRate Upgrade Cost 0/5",
+        skillTierC: [
+            {
+                name: "Reduce AutoGenerateRate Upgrade Cost 0/5",
+                description: "This button adds 0 out of 5 items",
+                skillPointCost: 1,
+                innerLevel: 0,
+                maxInnerLevel: 5,
+                tier: "C",
+                skillPointRequired: 0,
+            },
+            {
+                name: "blyyyyyyyyyyyyyyyablabla",
+                description: "This button adds 0 out of 5 items",
+                skillPointCost: 1,
+                innerLevel: 0,
+                maxInnerLevel: 5,
+                tier: "C",
+                skillPointRequired: 0,
+            },
+            {
+                name: "bluuuuuuuuuuablabla",
+                description: "This button adds 0 out of 5 items",
+                skillPointCost: 1,
+                innerLevel: 0,
+                maxInnerLevel: 5,
+                tier: "C",
+                skillPointRequired: 0,
+            },
+            {
+                name: "blyyyyyyyyyyyyyyyablabla",
+                description: "This button adds 0 out of 5 items",
+                skillPointCost: 1,
+                innerLevel: 0,
+                maxInnerLevel: 5,
+                tier: "C",
+                skillPointRequired: 0
+            }
+        ],
+        skillTierB: [
+            {
+                name: "Reduce AutoGenerateRate Upgrade Cost 0/5",
+                description: "This button adds 0 out of 5 items",
+                skillPointCost: 1,
+                innerLevel: 0,
+                maxInnerLevel: 5,
+                tier: "B",
+                skillPointRequired: 0,
+            },
+            {
+                name: "544dfgd5464",
+                description: "This button adds 0 out of 5 items",
+                skillPointCost: 1,
+                innerLevel: 0,
+                maxInnerLevel: 5,
+                tier: "B",
+                skillPointRequired: 0,
+            }
+        ]
+    }
+]
+
+let spaceDustSkill = [
+
+    {
+        name: "test",
         description: "This button adds 0 out of 5 items",
         skillPointCost: 1,
         innerLevel: 0,
-        maxInnerLevel: 5,
+        maxInnerLevel:5,
         tier: "C",
+        skillPointRequired: 0,
     },
     {
         name: "test",
         description: "This button adds 0 out of 5 items",
         skillPointCost: 1,
-        maxInnerLevel:5,
-        tier: "C",
-    },
-    {
-        name: "tedgdfgdgffst",
-        description: "This button adds 0 out of 5 items",
-        skillPointCost: 1,
-        maxInnerLevel:5,
-        tier: "C",
-    },
-    {
-        name: "test",
-        description: "This button adds 0 out of 5 items",
-        skillPointCost: 1,
+        innerLevel: 0,
         maxInnerLevel:5,
         tier: "B",
+        skillPointRequired: 6,
+    },
+    {
+        name: "test",
+        description: "This button adds 0 out of 5 items",
+        skillPointCost: 1,
+        innerLevel: 0,
+        maxInnerLevel:5,
+        tier: "B",
+        skillPointRequired: 6,
+    },
+    {
+        name: "test",
+        description: "This button adds 0 out of 5 items",
+        skillPointCost: 1,
+        innerLevel: 0,
+        maxInnerLevel:5,
+        tier: "A",
+        skillPointRequired: 12,
+    },
+    {
+        name: "test",
+        description: "This button adds 0 out of 5 items",
+        skillPointCost: 1,
+        innerLevel: 0,
+        maxInnerLevel:5,
+        tier: "A",
+        skillPointRequired: 12,
     }
 ]
 
@@ -118,31 +199,109 @@ function showSpaceDustColumn() {
     document.getElementById("solarSystemSkill").classList.add("hide");
 }
 
-function showSpaceDustSkill() {
+// function showSpaceDustSkill() {
+//     let sdsTableBody = document.getElementById("spaceDustSkillTableBody");
+//     sdsTableBody.innerHTML = ""; // Clear previous content before updating
+//     spaceDustSkill.forEach(skill => {
+        
+//         // Create a new row for each skill
+//         let row = document.createElement("tr");
+        
+//         let cell = document.createElement("td");
+//         // console.log(skill)
+        
+//         // console.log(row)
+//         // Construct HTML for the skill button and tooltip
+//         cell.innerHTML = `
+//             <div class="skillInformation d-flex flex-row">
+//                 <button class="button btn btn-secondary col-6" data-toggle="tooltip">${skill.name}</button>
+//                 <span class="hover-text">${skill.description}</span>
+//             </div>`;
+            
+//         row.appendChild(cell);
+//         console.log(cell)
+//         // Append the row to the table body
+//         sdsTableBody.appendChild(row);
+//     });
+// }
+// showSpaceDustSkill();
+
+
+
+function showSpaceDustSkillByTier() {
     let sdsTableBody = document.getElementById("spaceDustSkillTableBody");
     sdsTableBody.innerHTML = ""; // Clear previous content before updating
-    spaceDustSkill.forEach(skill => {
-        // Create a new row for each skill
-        let row = document.createElement("tr");
-        let cell = document.createElement("td");
-        console.log(skill)
-        
-        console.log(row)
-        // Construct HTML for the skill button and tooltip
-        cell.innerHTML = `
-            <div class="skillInformation">
-                <button class="button btn btn-secondary" data-toggle="tooltip">${skill.name}</button>
-                <span class="hover-text">${skill.description}</span>
-            </div>`;
-            
-        row.appendChild(cell);
-        console.log(cell)
-        // Append the row to the table body
-        sdsTableBody.appendChild(row);
+    
+    spaceDustSkillByTier.forEach(tierData => {
+        Object.keys(tierData).forEach(tierKey => {
+            let tierSkills = tierData[tierKey];
+            let row = document.createElement("tr");
+
+            // Tier Name Row
+            let tierNameCell = document.createElement("td");
+            tierNameCell.colSpan = getSkillsPerRow(tierKey);
+            tierNameCell.textContent = tierKey;
+            tierNameCell.style.textAlign = "center"; // Center align tier name
+            tierNameCell.style.verticalAlign = "middle"; // Center align vertically
+            row.appendChild(tierNameCell);
+            sdsTableBody.appendChild(row);
+
+            // Skills Row
+            row = document.createElement("tr");
+            let skillsPerRow = getSkillsPerRow(tierKey);
+            tierSkills.forEach(skill => {
+                let cell = document.createElement("td");
+                cell.appendChild(createSkillElement(skill));
+                row.appendChild(cell);
+            });
+            sdsTableBody.appendChild(row);
+        });
     });
 }
 
-showSpaceDustSkill();
+function getSkillsPerRow(tierKey) {
+    // Define the number of skills per row for each tier
+    // You can adjust this function based on your specific requirements
+    switch (tierKey) {
+        case 'skillTierC':
+            return 2; // Two skills per row for skillTierC
+        case 'skillTierB':
+            return 3; // Three skills per row for skillTierB
+        default:
+            return 1; // Default to one skill per row
+    }
+}
+
+function createSkillElement(skill) {
+    let skillDiv = document.createElement("div");
+    skillDiv.classList.add("skillInformation", "col-6", "text-center");
+    skillDiv.innerHTML = `
+        <button id="${skill.name.replace(/\s+/g, '-').toLowerCase()}" class="button btn btn-secondary" data-toggle="tooltip" style="position: relative; background-color: #808080;">${skill.name} (${skill.innerLevel}/${skill.maxInnerLevel})</button>
+        <span class="hover-text">${skill.description}</span>`;
+    
+    // Add click event listener to the button
+    skillDiv.querySelector("button").addEventListener("click", function() {
+        if (skill.innerLevel < skill.maxInnerLevel) {
+            skill.innerLevel++;
+            // Update button text to reflect new inner level
+            this.textContent = `${skill.name} (${skill.innerLevel}/${skill.maxInnerLevel})`;
+            // Update button background color to represent fill level
+            let fillPercentage = (skill.innerLevel / skill.maxInnerLevel) * 100;
+            this.style.background = `linear-gradient(to top, #4CAF50 ${fillPercentage}%, #808080 ${fillPercentage}%)`;
+        }
+    });
+    
+    return skillDiv;
+}
+
+showSpaceDustSkillByTier();
+
+
+
+
+
+
+
 
 
 /// function showing perk branch
@@ -393,7 +552,7 @@ function upgradeAutoGenerateAsteroid() {
         spaceDust -= autoGenerateUpgradeCostAsteroid;
         autoGenerateAsteroidRate++;
         autoGenerateUpgradeCostAsteroid = Math.round(autoGenerateUpgradeCostAsteroid * 1.1); // Increase cost for next upgrade
-        document.getElementById("autoGenerateUpgradeAsteroid").innerText = "Upgrade Auto Generation (Cost: " + autoGenerateUpgradeCostAsteroid + " Space Dust)";
+        document.getElementById("autoGenerateUpgradeAsteroid").innerText = "Upgrade Auto Generation (Cost: " + autoGenerateUpgradeCostAsteroid + " Comet)";
         document.getElementById("autoGenerateDisplayAsteroid").innerText ="Current Auto Generation : "+ autoGenerateAsteroidRate + " per second";
         updateAsteroid();
     }
@@ -465,6 +624,7 @@ document.getElementById("clickButton").addEventListener("click", handleClick);
 document.getElementById("clickPowerUpgrade").addEventListener("click", upgradeClickPower);
 document.getElementById("autoGenerateUpgrade").addEventListener("click", upgradeAutoGenerateSpaceDust);
 document.getElementById("autoGenerateUpgradeComet").addEventListener("click", upgradeAutoGenerateComet);
+document.getElementById("autoGenerateUpgradeAsteroid").addEventListener("click", upgradeAutoGenerateAsteroid);
 
 function tick() {
     autoGenerateSpaceDust();

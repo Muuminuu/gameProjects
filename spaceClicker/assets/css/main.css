@@ -30,26 +30,26 @@
     .skillInformation {
         position: relative;
         display: inline-block;
-        width: 200px; /* Width of the tooltip */
-        height: 120px; /* Height of the tooltip */
+        /* width: 200px; 
+        height: 120px;  */
     }
 
-    .skillInformation .button {
-        width: 100%; /* Make the button width 100% of the tooltip width */
-        height: 100%; /* Make the button height 100% of the tooltip height */
-        padding: 10px; /* Adjust padding as needed */
+    /* .skillInformation .button {
+        width: 100%; 
+        height: 100%; 
+        padding: 10px; 
         text-align: center;
-    }
+    } */
 
     .skillInformation .hover-text {
         visibility: hidden;
-        width: 120px; /* Width of the tooltip text */
+        width: 120px; 
         background-color: black;
         color: white;
         text-align: center;
         border-radius: 6px;
         padding: 5px;
-        position: absolute;
+        position: relative;
         z-index: 1;
         top: 100%;
         left: 50%;
