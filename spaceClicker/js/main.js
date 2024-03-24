@@ -43,110 +43,50 @@ let spaceDustSkillByTier = [
         skillTierC: [
             {
                 name: "Reduce AutoGenerateRate Upgrade Cost 0/5",
-                description: "This button adds 0 out of 5 items",
-                skillPointCost: 1,
+                description: "Reduce upgrade cost by 5%",
                 innerLevel: 0,
                 maxInnerLevel: 5,
-                tier: "C",
                 skillPointRequired: 0,
             },
             {
-                name: "blyyyyyyyyyyyyyyyablabla",
+                name: "Add +1 to DustSpace auto Rate",
                 description: "This button adds 0 out of 5 items",
-                skillPointCost: 1,
                 innerLevel: 0,
                 maxInnerLevel: 5,
-                tier: "C",
                 skillPointRequired: 0,
-            },
-            {
-                name: "bluuuuuuuuuuablabla",
-                description: "This button adds 0 out of 5 items",
-                skillPointCost: 1,
-                innerLevel: 0,
-                maxInnerLevel: 5,
-                tier: "C",
-                skillPointRequired: 0,
-            },
-            {
-                name: "blyyyyyyyyyyyyyyyablabla",
-                description: "This button adds 0 out of 5 items",
-                skillPointCost: 1,
-                innerLevel: 0,
-                maxInnerLevel: 5,
-                tier: "C",
-                skillPointRequired: 0
             }
         ],
         skillTierB: [
             {
-                name: "Reduce AutoGenerateRate Upgrade Cost 0/5",
-                description: "This button adds 0 out of 5 items",
-                skillPointCost: 1,
+                name: "Unlock New Space Element: Comet",
+                description: "Unlock Comet",
                 innerLevel: 0,
-                maxInnerLevel: 5,
-                tier: "B",
+                maxInnerLevel: 1,
                 skillPointRequired: 0,
-            },
+                spaceDustLevelRequired: 5
+                
+            }
+        ],
+        skillTierA: [
             {
-                name: "544dfgd5464",
-                description: "This button adds 0 out of 5 items",
-                skillPointCost: 1,
+                name: "Reduce AutoGenerateRate Upgrade Cost 0/5",
+                skillPointRequired: 0,
+                description: "This button adds 0 out of 5 items" ,
                 innerLevel: 0,
                 maxInnerLevel: 5,
-                tier: "B",
+                
+            }
+        ],
+        skillTierS: [
+            {
+                name: "Unlock New Space Element: Astroïds",
+                description: "Unlock Asteroïds",
+                innerLevel: 0,
+                maxInnerLevel: 1,
                 skillPointRequired: 0,
+                spaceDustLevelRequired: 15
             }
         ]
-    }
-]
-
-let spaceDustSkill = [
-
-    {
-        name: "test",
-        description: "This button adds 0 out of 5 items",
-        skillPointCost: 1,
-        innerLevel: 0,
-        maxInnerLevel:5,
-        tier: "C",
-        skillPointRequired: 0,
-    },
-    {
-        name: "test",
-        description: "This button adds 0 out of 5 items",
-        skillPointCost: 1,
-        innerLevel: 0,
-        maxInnerLevel:5,
-        tier: "B",
-        skillPointRequired: 6,
-    },
-    {
-        name: "test",
-        description: "This button adds 0 out of 5 items",
-        skillPointCost: 1,
-        innerLevel: 0,
-        maxInnerLevel:5,
-        tier: "B",
-        skillPointRequired: 6,
-    },
-    {
-        name: "test",
-        description: "This button adds 0 out of 5 items",
-        skillPointCost: 1,
-        innerLevel: 0,
-        maxInnerLevel:5,
-        tier: "A",
-        skillPointRequired: 12,
-    },
-    {
-        name: "test",
-        description: "This button adds 0 out of 5 items",
-        skillPointCost: 1,
-        innerLevel: 0,
-        maxInnerLevel:5,
-        tier: "A",
-        skillPointRequired: 12,
     }
 ]
 
@@ -249,7 +189,10 @@ function createSkillElement(skill) {
     skillDiv.classList.add("skillInformation", "col-6", "text-center");
     skillDiv.innerHTML = `
         <button id="${skill.name.replace(/\s+/g, '-').toLowerCase()}" class="button btn btn-secondary" data-toggle="tooltip" style="position: relative; background-color: #808080;">${skill.name} (${skill.innerLevel}/${skill.maxInnerLevel})</button>
-        <span class="hover-text">${skill.description}</span>`;
+        <span class="hover-text">${skill.description}</span>`
+        if (skill.spaceDustLevelRequired){
+            skillDiv.innerHTML += `<br><span class="hover-text">Space Dust Level Required: ${skill.spaceDustLevelRequired}</span>`
+        };
     
     // Add click event listener to the button
     skillDiv.querySelector("button").addEventListener("click", function() {
@@ -297,7 +240,7 @@ function showCelestialObjectColumn() {
 function showCelestialObjectSkill() {
     let sdsTableBody = document.getElementById("celestialObjectSkillTableBody");
     sdsTableBody.innerHTML = ""; // Clear previous content before updating
-    spaceDustSkill.forEach(skill => {
+    spaceDustSkillByTier.forEach(skill => {
         // Create a new row for each skill
         let row = document.createElement("tr");
         let cell = document.createElement("td");
@@ -360,7 +303,6 @@ showSolarSystemSkill();
 function updateSpaceDust() {
     document.getElementById("dustQuantity").innerText = "Space Dust: " + Math.round(spaceDust);
 }
-
 
 function updateComet(){
     document.getElementById("cometQuantity").innerText = "Comet: " + Math.round(comet);
