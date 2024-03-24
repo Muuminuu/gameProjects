@@ -24,12 +24,12 @@ let xp = 0;
 let level = 1;
 let perkPoints = 200;
 
-let spaceDustSkillPoint = 0;
+let spaceDustSkillPoint = 10;
 let celestialObjectSkillPoint = 0;
 
 
 let xpSpaceDust = 0;
-let levelSpaceDust = 1;
+let spaceDustLevel = 1;
 
 let xpCelestialObjects = 0;
 let levelCelestialObjects = 1;
@@ -199,35 +199,7 @@ function showSpaceDustColumn() {
     document.getElementById("solarSystemSkill").classList.add("hide");
 }
 
-// function showSpaceDustSkill() {
-//     let sdsTableBody = document.getElementById("spaceDustSkillTableBody");
-//     sdsTableBody.innerHTML = ""; // Clear previous content before updating
-//     spaceDustSkill.forEach(skill => {
-        
-//         // Create a new row for each skill
-//         let row = document.createElement("tr");
-        
-//         let cell = document.createElement("td");
-//         // console.log(skill)
-        
-//         // console.log(row)
-//         // Construct HTML for the skill button and tooltip
-//         cell.innerHTML = `
-//             <div class="skillInformation d-flex flex-row">
-//                 <button class="button btn btn-secondary col-6" data-toggle="tooltip">${skill.name}</button>
-//                 <span class="hover-text">${skill.description}</span>
-//             </div>`;
-            
-//         row.appendChild(cell);
-//         console.log(cell)
-//         // Append the row to the table body
-//         sdsTableBody.appendChild(row);
-//     });
-// }
-// showSpaceDustSkill();
-
-
-
+/////// logic for skill tree
 function showSpaceDustSkillByTier() {
     let sdsTableBody = document.getElementById("spaceDustSkillTableBody");
     sdsTableBody.innerHTML = ""; // Clear previous content before updating
@@ -295,6 +267,8 @@ function createSkillElement(skill) {
 }
 
 showSpaceDustSkillByTier();
+
+
 
 
 
@@ -374,10 +348,19 @@ function showSolarSystemSkill() {
 }
 showSolarSystemSkill();
 
+
+
+
+
+
+
+
+
 // Function to update score
 function updateSpaceDust() {
     document.getElementById("dustQuantity").innerText = "Space Dust: " + Math.round(spaceDust);
 }
+
 
 function updateComet(){
     document.getElementById("cometQuantity").innerText = "Comet: " + Math.round(comet);
@@ -387,11 +370,37 @@ function updateAsteroid(){
     document.getElementById("asteroidQuantity").innerText = "Asteroid: " + Math.round(asteroid);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
 function updatePerkPoints() {
     console.log(perkPoints);
     document.getElementById("perkPoints").innerText = "Perk Points: " + Math.round(perkPoints);
     console.log(perkPoints);
 }
+
+function updateSpaceDustSkillPoint() {
+    // Simulate gaining a skill perk
+    console.log("Gained a skill perk for SpaceDust skill tree!");
+    
+    document.getElementById("spaceDustSkillPoints").innerText = "SpaceDust Skill Points: " + Math.round(spaceDustSkillPoint);
+    
+}
+
+
+
+
+
+
 // Function to update XP progress bar
 function updateXPBar() {
     let maxXp = 5 * Math.pow(3, level - 1); // Max XP for the current level
@@ -401,22 +410,48 @@ function updateXPBar() {
     // document.getElementById("xpDetails").innerText = "XP: " + xp + " / " + maxXp;
 }
 
+function updateSpaceDustXPBar() {
+    let maxXp = 5 * Math.pow(3, spaceDustLevel - 1); // Max XP for the current level
+    let xpPercentage = (xpSpaceDust / maxXp) * 100;
+    if (xpPercentage > 100) xpPercentage = 100; // Cap at 100%
+    // updateSpaceDustXPBar(xpPercentage);
+    document.getElementById("spaceDustXpFill").style.width = xpPercentage + "%";
+}
+
+
+
+
+
+
+
+
+
+
+
+
 // Function to update current level
 function updateCurrentLevel() {
     document.getElementById("currentLevel").innerText = "Level: " + level;
 }
 
-function updateSpaceDustXPBar() {
-    let maxXp = 5 * Math.pow(3, levelSpaceDust - 1); // Max XP for the current level
-    let xpPercentage = (xpSpaceDust / maxXp) * 100;
-    if (xpPercentage > 100) xpPercentage = 100; // Cap at 100%
-    document.getElementById("xpFillSpaceDust").style.width = xpPercentage + "%";
-    // document.getElementById("xpDetails").innerText = "XP: " + xp + " / " + maxXp;
+function updateSpaceDustCurrentLevel() {
+    document.getElementById("spaceDustCurrentLevel").innerText = "SpaceDust Level: " + spaceDustLevel;
 }
 
-function updateSpaceDustCurrentlevel() {
-    document.getElementById("currentLevelSpaceDust").innerText = "Level: " + levelSpaceDust;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Function to handle click events
 function handleClick() {
@@ -426,10 +461,19 @@ function handleClick() {
     
     // Increment XP by a fixed amount for each click
     xp += 1;
+    xpSpaceDust += 1;
     
     updateXPBar();
+    updateSpaceDustXPBar();
     checkLevelUp();
+    checkSpaceDustLevelUp();
 }
+
+
+
+
+
+
 
 // Function to handle auto-generating space dust
 function autoGenerateSpaceDust() {
@@ -438,9 +482,13 @@ function autoGenerateSpaceDust() {
     
     // Increment XP based on auto-generated space dust
     xp += autoGenerateSpaceDustRate / 10;
+    xpSpaceDust += autoGenerateSpaceDustRate / 10;
     
     updateSpaceDust();
 }
+
+
+
 
 function spaceDustConsumption() {
     let cc = document.getElementById("spaceDustConsumption");
@@ -465,6 +513,10 @@ function autoGenerateComet() {
     updateComet();
 }
 
+
+
+
+
 function cometConsumption () {
     let coc = document.getElementById("cometConsumption");
     coc.innerText = "Comet Consumption: " + Math.round(autoGenerateAsteroidRate*10) + " per second";
@@ -482,6 +534,12 @@ function autoGenerateAsteroid() {
     totalAsteroid += autoGenerateAsteroidRate;
     }
 }
+
+
+
+
+
+
 
 function disableCometAutoGeneration() {
     autoGenerateCometEnabled = !autoGenerateCometEnabled;
@@ -510,6 +568,13 @@ function disableAsteroidAutoGeneration() {
         document.getElementById("disableAsteroidAutoGeneration").classList.remove("buttonDisable");
     }
 }
+
+
+
+
+
+
+
 
 // Function to upgrade click power
 function upgradeClickPower() {
@@ -558,6 +623,11 @@ function upgradeAutoGenerateAsteroid() {
     }
 }
 
+
+
+
+
+
 // Function to check for level up
 function checkLevelUp() {
     let maxXp = 5 * Math.pow(3, level - 1); // Max XP for the current level
@@ -572,6 +642,27 @@ function checkLevelUp() {
     }
     updateXPBar();
 }
+
+function checkSpaceDustLevelUp() {
+    let maxXp = 5 * Math.pow(3, spaceDustLevel - 1); // Max XP for the current level
+    if (xpSpaceDust >= maxXp) {
+        spaceDustLevel++;
+        xpSpaceDust = 0;
+        spaceDustSkillPoint++;
+        alert("Congratulations! You've reached level " + spaceDustLevel + " in Space Dust Tree. You gained 1 skill point.");
+        // You can add more logic here to handle perk allocation in a perk tree
+        updateSpaceDustCurrentLevel();
+        updateSpaceDustSkillPoint();
+    }
+    updateSpaceDustXPBar();
+}
+
+
+
+
+
+
+
 
 
 
@@ -632,6 +723,8 @@ function tick() {
     autoGenerateAsteroid();
     checkLevelUp();
     updateXPBar();
+    checkSpaceDustLevelUp();
+    updateSpaceDustXPBar();
     spaceDustConsumption();
     cometConsumption();
 }

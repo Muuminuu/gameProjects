@@ -81,7 +81,7 @@
         <div class="title d-flex">
             <!-- Titles -->
             <div class="spaceDustBranch col-4" onclick="showSpaceDustColumn()">
-                <h2>Dust Space Branch</h2>
+                <h2> SpaceDust Branch</h2>
             </div>
             <div class="branch col-4" id= "celestialObjectBranch" onclick="showCelestialObjectColumn()">
                 <h2>Branch 1: Celestial Objects</h2>
@@ -96,11 +96,20 @@
             <div class="globalSpaceDust">
                 <div id="spaceDustSkill">
                     <h2>Space Dust Skills</h2>
-                    <table class="table">
+                    <div id="spaceDustXpBarContainer">
+                        <div id="spaceDustXpBar"  role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                            <div id="spaceDustXpFill"  style="background-color: rgb(23, 52, 185);"></div>
+                        </div>
+                        <h3 id="spaceDustCurrentLevel">SpaceDust level : 0</h3>
+                    </div>
+                    
+                    <div>
                         
-                        <tbody id="spaceDustSkillTableBody">
+                        <h3 id="spaceDustSkillPoints">SpaceDust Skill Points : 0</h3>
+                    </div>
 
-                            <!-- Rows will be dynamically added here -->
+                    <table class="table">
+                        <tbody id="spaceDustSkillTableBody">
                         </tbody>
                     </table>
                 </div>
