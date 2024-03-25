@@ -115,6 +115,15 @@
         /* position: relative; */
     }
 
+    #solarSystemXpBar {
+        margin-left: 25%;
+        width: 50%;
+        height: 20px;
+        border: 1px solid #000;
+        /* overflow: hidden; */
+        /* position: relative; */
+    }
+
 
     #xpFill {
         height: 100%;
@@ -128,13 +137,23 @@
         height: 100%;
         background-color: #043004;
         /* position: absolute; */
-        z-index: 10;
+        /* z-index: 10; */
         top: 0;
         left: 0;
         width: 0;
     }
 
     #celestialObjectXpFill {
+        height: 100%;
+        background-color: #664306;
+        /* position: absolute; */
+        /* z-index: 10; */
+        top: 0;
+        left: 0;
+        width: 0;
+    }
+
+    #solarSystemXpFill {
         height: 100%;
         background-color: #664306;
         /* position: absolute; */

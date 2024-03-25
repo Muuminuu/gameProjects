@@ -21,16 +21,20 @@ let autoGenerateUpgradeCostAsteroid = 500;
 let autoGenerateCometEnabled = true;
 let autoGenerateAsteroidEnabled = true;
 
-let xp = 0;
-let level = 1;
-// let perkPoints = 200;
+/////////////////////// skillspoints /////////////////////////////
 
 let spaceDustSkillPoint = 1000;
 let totalSpaceDustSkillPoint = 1000;
 
-let celestialObjectSkillPoint = 0;
-let totalCelestialObjectSkillPoint = 0;
+let celestialObjectSkillPoint = 100;
+let totalCelestialObjectSkillPoint = 100;
 
+let solarSystemSkillPoint = 100;
+let totalSolarSystemSkillPoint = 100;
+
+/////////////////////// levels & xp /////////////////////////////
+let xp = 0;
+let level = 1;
 
 let xpSpaceDust = 0;
 let spaceDustLevel = 1;
@@ -38,6 +42,10 @@ let spaceDustLevel = 1;
 let xpCelestialObject = 0;
 let celestialObjectLevel = 1;
 
+let xpSolarSystem = 0;
+let solarSystemLevel = 1;
+
+/////////////////////// skills to unlock ? still working ? ///////////////////////////////////
 let cometUnlocked = false;
 let asteroidsUnlocked = false;
 
@@ -87,7 +95,7 @@ let spaceDustSkillByTier = [
                 unlockCondition: 5
             },
             {
-                name: "Astroïds",
+                name: "Asteroïds",
                 description: "Unlock Asteroïds",
                 isUnlocked: false,
                 innerLevel: 0,
@@ -170,7 +178,7 @@ let celestialObjectSkillByTier = [
             unlockCondition: 5
         },
         {
-            name: "Astroïds",
+            name: "Asteroïds",
             description: "Unlock Asteroïds",
             isUnlocked: false,
             innerLevel: 0,
@@ -201,16 +209,85 @@ let celestialObjectSkillByTier = [
 
 
 
-let solarSystemSkill = [
+
+
+
+
+let solarSystemSkillByTier = [
     {
-        name: "solar system",
-        description: "This button adds 0 out of 5 items",
-        skillPointCost: 1,
-        innerLevel: 0,
-        maxInnerLevel: 5,
-        tier: "C",
-    }
+    skillTierC: [
+        {
+            name: "solarSystem Reduce AutoGenerateRate Upgrade Cost",
+            description: "Reduce upgrade cost by 3%",
+            effect: 3/100,
+            innerLevel: 0,
+            maxInnerLevel: 5,
+            solarSystemSkillPointCost: 1,
+            unlockCondition: 0
+        },
+        {
+            name: "solarSystem Enhance DustSpace auto Rate",
+            description: "Add +1 to DustSpace auto Rate",
+            effect: 1,
+            innerLevel: 0,
+            maxInnerLevel: 5,
+            solarSystemSkillPointCost: 1,
+            unlockCondition: 0
+        }
+    ],
+    skillTierB: [
+        {
+            name: "solarSystem Comet",
+            description: "Unlock Comet",
+            // isUnlocked: false,
+            innerLevel: 0,
+            maxInnerLevel: 1,
+            solarSystemSkillPointCost: 3,
+            unlockCondition: 5
+        }
+    ],
+    skillTierA: [
+        {
+            name: "Reduce AutoGenerateRate Upgrade Cost",
+            description: "Reduce upgrade cost by 2%",
+            effect: 2/100,
+            innerLevel: 0,
+            maxInnerLevel: 10,
+            solarSystemSkillPointCost: 1,
+            isUnlocked: false,
+            unlockCondition: 5
+        },
+        {
+            name: "Asteroïds",
+            description: "Unlock Asteroïds",
+            isUnlocked: false,
+            innerLevel: 0,
+            maxInnerLevel: 1,
+            solarSystemSkillPointCost: 5,
+            // isUnlocked: false,
+            unlockCondition: 10
+        }
+    ],
+    skillTierS: [
+        {
+            name: "Reduce AutoGenerateRate Upgrade Cost",
+            description: "Reduce upgrade cost by 1%",
+            effect: 1/100,
+            maxInnerLevel: "infinity",
+            innerLevel: 0,
+            solarSystemSkillPointCost: 1,
+            isUnlocked: false,
+            unlockCondition: 15
+        },
+    ]
+}
 ]
+
+
+
+
+
+
 
 
 
@@ -231,7 +308,7 @@ function allocateSpaceDustSkillPoint(skill) {
             cometUnlocked = true;
             unlockComet();
         }
-        if(skill.innerLevel === skill.maxInnerLevel && skill.name==="Astroïds") {
+        if(skill.innerLevel === skill.maxInnerLevel && skill.name==="Asteroïds") {
             asteroidsUnlocked = true;
             unlockAsteroid();
         }
@@ -263,7 +340,7 @@ function allocateCelestialObjectSkillPoint(skill) {
             cometUnlocked = true;
             unlockComet();
         }
-        if(skill.innerLevel === skill.maxInnerLevel && skill.name==="Astroïds") {
+        if(skill.innerLevel === skill.maxInnerLevel && skill.name==="Asteroïds") {
             asteroidsUnlocked = true;
             unlockAsteroid();
         }
@@ -283,6 +360,33 @@ function unlockCelestialObjectSkillLogic(unlockCondition, skill) {
 }
 
 
+
+function allocateSolarSystemSkillPoint(skill) {
+    if (totalSolarSystemSkillPoint >= skill.solarSystemSkillPointCost) {
+        solarSystemSkillPoint -= skill.solarSystemSkillPointCost;
+        skill.innerLevel++;
+        if(skill.innerLevel === skill.maxInnerLevel && skill.name==="Comet") {
+            cometUnlocked = true;
+            unlockComet();
+        }
+        if(skill.innerLevel === skill.maxInnerLevel && skill.name==="Asteroïds") {
+            asteroidsUnlocked = true;
+            unlockAsteroid();
+        }
+        // updateSkillTreeUI();
+    } else {
+        alert("Insufficient skill points!");
+    }
+}
+
+// Function to unlock new tiers based on skill points spent
+function unlockSolarSystemSkillLogic(unlockCondition, skill) {
+    if ((totalSolarSystemSkillPoint-solarSystemSkillPoint) >= unlockCondition && solarSystemSkillPoint >= skill.solarSystemSkillPointCost) {
+        isUnlocked: true;
+        allocateSolarSystemSkillPoint(skill);
+        return true;
+    }
+}
 
 
 
@@ -508,7 +612,7 @@ showCelestialObjectSkillByTier();
 
 
 
-//////////////////////////// celestialObject skilltree //////////////////////////////////
+//////////////////////////// end celestialObject skilltree //////////////////////////////////
 
 
 
@@ -564,37 +668,96 @@ showCelestialObjectSkillByTier();
 
 
 
+//////////////////////////// celestialObject skilltree //////////////////////////////////
 
 
 
 function showSolarSystemColumn() {
     let ssd = document.getElementById("solarSystemSkill");
     ssd.classList.remove("hide");
-    document.getElementById("celestialObjectSkill").classList.add("hide");
     document.getElementById("spaceDustSkill").classList.add("hide");
+    document.getElementById("celestialObjectSkill").classList.add("hide");
 }
 
-function showSolarSystemSkill() {
+/////// logic for skill tree
+function showSolarSystemSkillByTier() {
     let sdsTableBody = document.getElementById("solarSystemSkillTableBody");
     sdsTableBody.innerHTML = ""; // Clear previous content before updating
-    solarSystemSkill.forEach(skill => {
-        // Create a new row for each skill
-        let row = document.createElement("tr");
-        let cell = document.createElement("td");
-        // Construct HTML for the skill button and tooltip
-        cell.innerHTML = `
-            <div class="">
-                <button class="button" style="font-size: 10px">${skill.name}</button>
-                <span class="">${skill.description}</span>
-            </div>`;
-        row.appendChild(cell);
-        // Append the row to the table body
-        sdsTableBody.appendChild(row);
+    
+    solarSystemSkillByTier.forEach(tierData => {
+        Object.keys(tierData).forEach(tierKey => {
+            let tierSkills = tierData[tierKey];
+            let row = document.createElement("tr");
+
+            // Tier Name Row
+            let tierNameCell = document.createElement("td");
+            // tierNameCell.colSpan = getSkillsPerRow(tierKey);
+            tierNameCell.textContent = tierKey;
+            tierNameCell.style.textAlign = "center"; // Center align tier name
+            tierNameCell.style.verticalAlign = "middle"; // Center align vertically
+            row.appendChild(tierNameCell);
+            sdsTableBody.appendChild(row);
+
+            // Skills Row
+            row = document.createElement("tr");
+            // let skillsPerRow = getSkillsPerRow(tierKey);
+            tierSkills.forEach(skill => {
+                let cell = document.createElement("td");
+                cell.appendChild(createSolarSystemSkillElement(skill));
+                row.appendChild(cell);
+            });
+            sdsTableBody.appendChild(row);
+        });
     });
 }
-showSolarSystemSkill();
+
+function createSolarSystemSkillElement(skill) {
+    let skillDiv = document.createElement("div");
+    skillDiv.classList.add("skillInformation", "col-6", "text-center");
+    skillDiv.innerHTML = `
+        <button id="${skill.name.replace(/\s+/g, '-').toLowerCase()}" class="button btn btn-secondary" data-toggle="tooltip" style="position: relative; background-color: #808080;">${skill.name} (${skill.innerLevel}/${skill.maxInnerLevel})</button>
+        <br><p class="badge text-bg-dark">Cost: ${skill.solarSystemSkillPointCost}</p>
+        <span class="hover-text">${skill.description}</span>`
+        if (skill.unlockCondition>0){
+            skillDiv.innerHTML += `<br><span class="hover-text">you must spend a total of ${skill.unlockCondition} Solar System Skill points to unlock ${skill.name}</span>`
+        };
+    
+    // Add click event listener to the button
+    skillDiv.querySelector("button").addEventListener("click", function() {
+
+        if(skill.maxInnerLevel === "infinity" && unlockSolarSystemSkillLogic(skill.unlockCondition, skill)){
+            this.textContent = `${skill.name} (${skill.innerLevel})`;
+            if(skill.innerLevel>0){
+                let fillPercentage = 100;
+                this.style.background = `linear-gradient(to top, #4CAF50 ${fillPercentage}%, #808080 ${fillPercentage}%)`;
+            }
+            
+        
+        }
+        if (skill.innerLevel < skill.maxInnerLevel && unlockSolarSystemSkillLogic(skill.unlockCondition, skill)) {
+
+            // Update button text to reflect new inner level
+            
+                this.textContent = `${skill.name} (${skill.innerLevel}/${skill.maxInnerLevel})`;
+            
+            
+            // Update button background color to represent fill level
+            let fillPercentage = (skill.innerLevel / skill.maxInnerLevel) * 100;
+            this.style.background = `linear-gradient(to top, #4CAF50 ${fillPercentage}%, #808080 ${fillPercentage}%)`;
+            
+        }
+        
+    });
+
+    return skillDiv;
+}
+
+showSolarSystemSkillByTier();
 
 
+
+
+//////////////////////////// end celestialObject skilltree //////////////////////////////////
 
 
 
@@ -635,7 +798,6 @@ function updateAsteroid(){
 
 function updateSpaceDustSkillPoint() {
     // Simulate gaining a skill perk
-    console.log("Gained a skill point for SpaceDust skill tree!");
     
     document.getElementById("spaceDustSkillPoints").innerText = "SpaceDust Skill Points: " + Math.round(spaceDustSkillPoint);
     document.getElementById("spaceDustSkillPointsSpent").innerText = Math.round(totalSpaceDustSkillPoint-spaceDustSkillPoint)+" SpaceDust Skill Points Spent" ;
@@ -644,11 +806,18 @@ function updateSpaceDustSkillPoint() {
 
 function updateCelestialObjectSkillPoint() {
     // Simulate gaining a skill perk
-    console.log("Gained a skill point for CelestialObject skill tree!");
     
     document.getElementById("celestialObjectSkillPoints").innerText = "CelestialObject Skill Points: " + Math.round(celestialObjectSkillPoint);
     document.getElementById("celestialObjectSkillPointsSpent").innerText = Math.round(totalCelestialObjectSkillPoint-celestialObjectSkillPoint)+" CelestialObject Skill Points Spent" ;
 }
+
+function updateSolarSystemSkillPoint() {
+    // Simulate gaining a skill perk
+    document.getElementById("solarSystemSkillPoints").innerText = "Solar System Skill Points: " + Math.round(solarSystemSkillPoint);
+    document.getElementById("solarSystemSkillPointsSpent").innerText = Math.round(totalSolarSystemSkillPoint-solarSystemSkillPoint)+" Solar System Skill Points Spent" ;
+}
+
+
 
 
 
@@ -684,7 +853,14 @@ function updateCelestialObjectXPBar() {
     updateCelestialObjectSkillPoint();
 }
 
-
+function updateSolarSystemXPBar() {
+    let maxXp = 5 * Math.pow(3, solarSystemLevel - 1); // Max XP for the current level
+    let xpPercentage = (xpSolarSystem / maxXp) * 100;
+    if (xpPercentage > 100) xpPercentage = 100; // Cap at 100%
+    // updateSpaceDustXPBar(xpPercentage);
+    document.getElementById("solarSystemXpFill").style.width = xpPercentage + "%";
+    updateSolarSystemSkillPoint();
+}
 
 
 
@@ -706,7 +882,9 @@ function updateCelestialObjectCurrentLevel() {
     document.getElementById("celestialObjectCurrentLevel").innerText = "CelestialObject Level: " + celestialObjectLevel;
 }
 
-
+function updateSolarSystemCurrentLevel() {
+    document.getElementById("solarSystemCurrentLevel").innerText = "SolarSystem Level: " + solarSystemLevel;
+}
 
 
 
@@ -797,8 +975,13 @@ function autoGenerateAsteroid() {
     }
     if(autoGenerateAsteroidEnabled){
         asteroid += autoGenerateAsteroidRate;
-    totalAsteroid += autoGenerateAsteroidRate;
+        totalAsteroid += autoGenerateAsteroidRate;
+
+        xpSolarSystem += autoGenerateAsteroidRate / 5;
+        comet-= autoGenerateAsteroidRate*10;
     }
+
+    updateAsteroid();
 }
 
 
@@ -947,6 +1130,22 @@ function checkCelestialObjectLevelUp() {
     updateCelestialObjectXPBar();
 }
 
+function checkSolarSystemLevelUp() {
+    let maxXp = 5 * Math.pow(3, solarSystemLevel - 1); // Max XP for the current level
+    if (xpSolarSystem >= maxXp) {
+        solarSystemLevel++;
+        xpSolarSystem = 0;
+        solarSystemSkillPoint++;
+        totalSolarSystemSkillPoint++;
+        alert("Congratulations! You've reached level " + solarSystemLevel + " in Solar System Tree. You gained 1 skill point.");
+        // You can add more logic here to handle perk allocation in a perk tree
+        updateSolarSystemCurrentLevel();
+        updateSolarSystemSkillPoint();
+    }
+    updateSolarSystemXPBar();
+}
+
+
 
 
 
@@ -1033,6 +1232,9 @@ function tick() {
 
     checkCelestialObjectLevelUp();
     updateCelestialObjectXPBar();
+
+    checkSolarSystemLevelUp();
+    updateSolarSystemXPBar();
 
     spaceDustConsumption();
     cometConsumption();
