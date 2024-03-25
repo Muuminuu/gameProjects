@@ -29,13 +29,14 @@ let spaceDustSkillPoint = 1000;
 let totalSpaceDustSkillPoint = 1000;
 
 let celestialObjectSkillPoint = 0;
+let totalCelestialObjectSkillPoint = 0;
 
 
 let xpSpaceDust = 0;
 let spaceDustLevel = 1;
 
-let xpCelestialObjects = 0;
-let levelCelestialObjects = 1;
+let xpCelestialObject = 0;
+let celestialObjectLevel = 1;
 
 let cometUnlocked = false;
 let asteroidsUnlocked = false;
@@ -111,37 +112,95 @@ let spaceDustSkillByTier = [
     }
 ]
 
-let upgradeCelestialObject = [
-    {
-        name: "Comet",
-        cost: 10,
 
-    },
-    {
-        name: "Asteroid",
-        cost: 30,
+// let upgradeCelestialObject = [
+//     {
+//         name: "Comet",
+//         cost: 100,
 
-    }
-]
-let celestialObjectSkill = [
+//     },
+//     {
+//         name: "Asteroid",
+//         cost: 30,
+
+//     }
+// ]
+let celestialObjectSkillByTier = [
     {
-        name: "Reduce AutoGenerateRate Upgrade Cost 0/5",
-        description: "This button adds 0 out of 5 items",
-        skillPointCost: 1,
-        innerLevel: 0,
-        maxInnerLevel: 5,
-        tier: "C",
-    },
-    {
-        name: "",
-        description: "This button adds 0 out of 5 items",
-        skillPointCost: 1,
-    }
-    // <div class="tooltip">
-        //      <button class="button" title="This button adds 0 out of 5 items">Add 0/5</button>
-        //      <span class="tooltiptext">This button adds 0 out of 5 items</span>
-        // </div>
+    skillTierC: [
+        {
+            name: "celestialObject Reduce AutoGenerateRate Upgrade Cost",
+            description: "Reduce upgrade cost by 3%",
+            effect: 3/100,
+            innerLevel: 0,
+            maxInnerLevel: 5,
+            celestialObjectSkillPointCost: 1,
+            unlockCondition: 0
+        },
+        {
+            name: "celestialObject Enhance DustSpace auto Rate",
+            description: "Add +1 to DustSpace auto Rate",
+            effect: 1,
+            innerLevel: 0,
+            maxInnerLevel: 5,
+            celestialObjectSkillPointCost: 1,
+            unlockCondition: 0
+        }
+    ],
+    skillTierB: [
+        {
+            name: "celestialObject Comet",
+            description: "Unlock Comet",
+            // isUnlocked: false,
+            innerLevel: 0,
+            maxInnerLevel: 1,
+            celestialObjectSkillPointCost: 3,
+            unlockCondition: 5
+        }
+    ],
+    skillTierA: [
+        {
+            name: "Reduce AutoGenerateRate Upgrade Cost",
+            description: "Reduce upgrade cost by 2%",
+            effect: 2/100,
+            innerLevel: 0,
+            maxInnerLevel: 10,
+            celestialObjectSkillPointCost: 1,
+            isUnlocked: false,
+            unlockCondition: 5
+        },
+        {
+            name: "Astroïds",
+            description: "Unlock Asteroïds",
+            isUnlocked: false,
+            innerLevel: 0,
+            maxInnerLevel: 1,
+            celestialObjectSkillPointCost: 5,
+            // isUnlocked: false,
+            unlockCondition: 10
+        }
+    ],
+    skillTierS: [
+        {
+            name: "Reduce AutoGenerateRate Upgrade Cost",
+            description: "Reduce upgrade cost by 1%",
+            effect: 1/100,
+            maxInnerLevel: "infinity",
+            innerLevel: 0,
+            celestialObjectSkillPointCost: 1,
+            isUnlocked: false,
+            unlockCondition: 15
+        },
+    ]
+}
 ]
+
+
+
+
+
+
+
 let solarSystemSkill = [
     {
         name: "solar system",
@@ -183,13 +242,12 @@ function allocateSpaceDustSkillPoint(skill) {
 }
 
 // Function to unlock new tiers based on skill points spent
-function unlockSkillLogic(unlockCondition, skill) {
+function unlockSpaceDustSkillLogic(unlockCondition, skill) {
     if ((totalSpaceDustSkillPoint-spaceDustSkillPoint) >= unlockCondition && spaceDustSkillPoint >= skill.spaceDustSkillPointCost) {
         isUnlocked: true;
         allocateSpaceDustSkillPoint(skill);
         return true;
     }
-
 }
 
 // // Update UI initially
@@ -197,7 +255,54 @@ function unlockSkillLogic(unlockCondition, skill) {
 
 
 
+function allocateCelestialObjectSkillPoint(skill) {
+    if (totalCelestialObjectSkillPoint >= skill.celestialObjectSkillPointCost) {
+        celestialObjectSkillPoint -= skill.celestialObjectSkillPointCost;
+        skill.innerLevel++;
+        if(skill.innerLevel === skill.maxInnerLevel && skill.name==="Comet") {
+            cometUnlocked = true;
+            unlockComet();
+        }
+        if(skill.innerLevel === skill.maxInnerLevel && skill.name==="Astroïds") {
+            asteroidsUnlocked = true;
+            unlockAsteroid();
+        }
+        // updateSkillTreeUI();
+    } else {
+        alert("Insufficient skill points!");
+    }
+}
 
+// Function to unlock new tiers based on skill points spent
+function unlockCelestialObjectSkillLogic(unlockCondition, skill) {
+    if ((totalCelestialObjectSkillPoint-celestialObjectSkillPoint) >= unlockCondition && celestialObjectSkillPoint >= skill.celestialObjectSkillPointCost) {
+        isUnlocked: true;
+        allocateCelestialObjectSkillPoint(skill);
+        return true;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//////////////////////////// spaceDust skilltree //////////////////////////////////
 
 
 function showSpaceDustColumn() {
@@ -219,7 +324,7 @@ function showSpaceDustSkillByTier() {
 
             // Tier Name Row
             let tierNameCell = document.createElement("td");
-            tierNameCell.colSpan = getSkillsPerRow(tierKey);
+            // tierNameCell.colSpan = getSkillsPerRow(tierKey);
             tierNameCell.textContent = tierKey;
             tierNameCell.style.textAlign = "center"; // Center align tier name
             tierNameCell.style.verticalAlign = "middle"; // Center align vertically
@@ -228,7 +333,7 @@ function showSpaceDustSkillByTier() {
 
             // Skills Row
             row = document.createElement("tr");
-            let skillsPerRow = getSkillsPerRow(tierKey);
+            // let skillsPerRow = getSkillsPerRow(tierKey);
             tierSkills.forEach(skill => {
                 let cell = document.createElement("td");
                 cell.appendChild(createSkillElement(skill));
@@ -239,35 +344,35 @@ function showSpaceDustSkillByTier() {
     });
 }
 
-function getSkillsPerRow(tierKey) {
-    // Define the number of skills per row for each tier
-    // You can adjust this function based on your specific requirements
-    switch (tierKey) {
-        case 'skillTierC':
-            return 2; // Two skills per row for skillTierC
-        case 'skillTierB':
-            return 3; // Three skills per row for skillTierB
-        default:
-            return 1; // Default to one skill per row
-    }
-}
+// function getSkillsPerRow(tierKey) {
+//     // Define the number of skills per row for each tier
+//     // You can adjust this function based on your specific requirements
+//     switch (tierKey) {
+//         case 'skillTierC':
+//             return 2; // Two skills per row for skillTierC
+//         case 'skillTierB':
+//             return 3; // Three skills per row for skillTierB
+//         default:
+//             return 1; // Default to one skill per row
+//     }
+// }
 
+// let spacedustSkillPointToReachSkill = unlockCondition-(totalSpaceDustSkillPoint-spaceDustSkillPoint);
 function createSkillElement(skill) {
     let skillDiv = document.createElement("div");
     skillDiv.classList.add("skillInformation", "col-6", "text-center");
     skillDiv.innerHTML = `
         <button id="${skill.name.replace(/\s+/g, '-').toLowerCase()}" class="button btn btn-secondary" data-toggle="tooltip" style="position: relative; background-color: #808080;">${skill.name} (${skill.innerLevel}/${skill.maxInnerLevel})</button>
+        <br><p class="badge text-bg-dark">Cost: ${skill.spaceDustSkillPointCost}</p>
         <span class="hover-text">${skill.description}</span>`
         if (skill.unlockCondition>0){
-            skillDiv.innerHTML += `<br><span class="hover-text">you must spend another (${skill.unlockCondition} Space Dust Skill points to unlock this skill</span>`
+            skillDiv.innerHTML += `<br><span class="hover-text">you must spend a total of ${skill.unlockCondition} Space Dust Skill points to unlock ${skill.name}</span>`
         };
     
     // Add click event listener to the button
     skillDiv.querySelector("button").addEventListener("click", function() {
 
-        if(skill.maxInnerLevel === "infinity" && unlockSkillLogic(skill.unlockCondition, skill)){
-            console.log()
-
+        if(skill.maxInnerLevel === "infinity" && unlockSpaceDustSkillLogic(skill.unlockCondition, skill)){
             this.textContent = `${skill.name} (${skill.innerLevel})`;
             if(skill.innerLevel>0){
                 let fillPercentage = 100;
@@ -276,7 +381,7 @@ function createSkillElement(skill) {
             
         
         }
-        if (skill.innerLevel < skill.maxInnerLevel && unlockSkillLogic(skill.unlockCondition, skill)) {
+        if (skill.innerLevel < skill.maxInnerLevel && unlockSpaceDustSkillLogic(skill.unlockCondition, skill)) {
 
             // Update button text to reflect new inner level
             
@@ -286,19 +391,20 @@ function createSkillElement(skill) {
             // Update button background color to represent fill level
             let fillPercentage = (skill.innerLevel / skill.maxInnerLevel) * 100;
             this.style.background = `linear-gradient(to top, #4CAF50 ${fillPercentage}%, #808080 ${fillPercentage}%)`;
-            if(cometUnlocked = false && skill.innerLevel === 1 && skill.name === "Comet"){
-                unlockComet();
-            }
+            // if(cometUnlocked = false && skill.innerLevel === 1 && skill.name === "Comet"){
+            //     unlockComet();
+            // }
         }
         
     });
-    
+
     return skillDiv;
 }
 
 showSpaceDustSkillByTier();
 
 
+//////////////////////////// end of spaceDust skilltree //////////////////////////////////
 
 
 
@@ -308,14 +414,15 @@ showSpaceDustSkillByTier();
 
 
 
-/// function showing perk branch
-function showUpgradeCelestialObject() {
-    let cob = document.getElementById("celestialObjectBranch")
-    upgradeCelestialObject.forEach(upgrade => {
-        cob.innerHTML += `<div class="perk" onclick="unlock${upgrade.name}()" data-perk="${upgrade.name}">${upgrade.name} - cost : ${upgrade.cost}</div>`
-    });
-}
-showUpgradeCelestialObject();
+
+
+
+
+
+
+//////////////////////////// celestialObject skilltree //////////////////////////////////
+
+
 
 function showCelestialObjectColumn() {
     let ssd = document.getElementById("celestialObjectSkill");
@@ -324,32 +431,141 @@ function showCelestialObjectColumn() {
     document.getElementById("solarSystemSkill").classList.add("hide");
 }
 
-function showCelestialObjectSkill() {
+/////// logic for skill tree
+function showCelestialObjectSkillByTier() {
     let sdsTableBody = document.getElementById("celestialObjectSkillTableBody");
     sdsTableBody.innerHTML = ""; // Clear previous content before updating
-    spaceDustSkillByTier.forEach(skill => {
-        // Create a new row for each skill
-        let row = document.createElement("tr");
-        let cell = document.createElement("td");
-        // Construct HTML for the skill button and tooltip
-        cell.innerHTML = `
-            <div class="">
-                <button class="button" style="font-size: 10px">${skill.name}</button>
-                <span class="">${skill.description}</span>
-            </div>`;
-        row.appendChild(cell);
-        // Append the row to the table body
-        sdsTableBody.appendChild(row);
+    
+    celestialObjectSkillByTier.forEach(tierData => {
+        Object.keys(tierData).forEach(tierKey => {
+            let tierSkills = tierData[tierKey];
+            let row = document.createElement("tr");
+
+            // Tier Name Row
+            let tierNameCell = document.createElement("td");
+            // tierNameCell.colSpan = getSkillsPerRow(tierKey);
+            tierNameCell.textContent = tierKey;
+            tierNameCell.style.textAlign = "center"; // Center align tier name
+            tierNameCell.style.verticalAlign = "middle"; // Center align vertically
+            row.appendChild(tierNameCell);
+            sdsTableBody.appendChild(row);
+
+            // Skills Row
+            row = document.createElement("tr");
+            // let skillsPerRow = getSkillsPerRow(tierKey);
+            tierSkills.forEach(skill => {
+                let cell = document.createElement("td");
+                cell.appendChild(createCelestialObjectSkillElement(skill));
+                row.appendChild(cell);
+            });
+            sdsTableBody.appendChild(row);
+        });
     });
 }
-/// reliquat pour verifier
-// function showCelestialObjectSkill() {
-//     let cob = document.getElementById("celestialObjectSkill")
-//     celestialObjectSkill.forEach(skill => {
-//         cob.innerHTML += `<div class="skill" onclick="unlock${skill.name}()" data-skill="${skill.name}">${skill.name}</div>`
+
+function createCelestialObjectSkillElement(skill) {
+    let skillDiv = document.createElement("div");
+    skillDiv.classList.add("skillInformation", "col-6", "text-center");
+    skillDiv.innerHTML = `
+        <button id="${skill.name.replace(/\s+/g, '-').toLowerCase()}" class="button btn btn-secondary" data-toggle="tooltip" style="position: relative; background-color: #808080;">${skill.name} (${skill.innerLevel}/${skill.maxInnerLevel})</button>
+        <br><p class="badge text-bg-dark">Cost: ${skill.celestialObjectSkillPointCost}</p>
+        <span class="hover-text">${skill.description}</span>`
+        if (skill.unlockCondition>0){
+            skillDiv.innerHTML += `<br><span class="hover-text">you must spend a total of ${skill.unlockCondition} Space Dust Skill points to unlock ${skill.name}</span>`
+        };
+    
+    // Add click event listener to the button
+    skillDiv.querySelector("button").addEventListener("click", function() {
+
+        if(skill.maxInnerLevel === "infinity" && unlockCelestialObjectSkillLogic(skill.unlockCondition, skill)){
+            this.textContent = `${skill.name} (${skill.innerLevel})`;
+            if(skill.innerLevel>0){
+                let fillPercentage = 100;
+                this.style.background = `linear-gradient(to top, #4CAF50 ${fillPercentage}%, #808080 ${fillPercentage}%)`;
+            }
+            
+        
+        }
+        if (skill.innerLevel < skill.maxInnerLevel && unlockCelestialObjectSkillLogic(skill.unlockCondition, skill)) {
+
+            // Update button text to reflect new inner level
+            
+                this.textContent = `${skill.name} (${skill.innerLevel}/${skill.maxInnerLevel})`;
+            
+            
+            // Update button background color to represent fill level
+            let fillPercentage = (skill.innerLevel / skill.maxInnerLevel) * 100;
+            this.style.background = `linear-gradient(to top, #4CAF50 ${fillPercentage}%, #808080 ${fillPercentage}%)`;
+            
+        }
+        
+    });
+
+    return skillDiv;
+}
+
+showCelestialObjectSkillByTier();
+
+
+
+//////////////////////////// celestialObject skilltree //////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// function showCelestialObjectColumn() {
+//     let ssd = document.getElementById("celestialObjectSkill");
+//     ssd.classList.remove("hide");
+//     document.getElementById("spaceDustSkill").classList.add("hide");
+//     document.getElementById("solarSystemSkill").classList.add("hide");
+// }
+
+// function showCelestialObjectSkillByTier() {
+//     let sdsTableBody = document.getElementById("celestialObjectSkillTableBody");
+//     sdsTableBody.innerHTML = ""; // Clear previous content before updating
+//     spaceDustSkillByTier.forEach(skill => {
+//         // Create a new row for each skill
+//         let row = document.createElement("tr");
+//         let cell = document.createElement("td");
+//         // Construct HTML for the skill button and tooltip
+//         cell.innerHTML = `
+//             <div class="">
+//                 <button class="button" style="font-size: 10px">${skill.name}</button>
+//                 <span class="">${skill.description}</span>
+//             </div>`;
+//         row.appendChild(cell);
+//         // Append the row to the table body
+//         sdsTableBody.appendChild(row);
 //     });
 // }
-showCelestialObjectSkill();
+
+// showCelestialObjectSkillByTier();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function showSolarSystemColumn() {
     let ssd = document.getElementById("solarSystemSkill");
@@ -392,11 +608,11 @@ function updateSpaceDust() {
 }
 
 function updateComet(){
-    document.getElementById("cometQuantity").innerText = "Comet: " + Math.round(comet);
+    document.getElementById("cometQuantity").innerText = "Comet Amount: " + Math.round(comet);
 }
 
 function updateAsteroid(){
-    document.getElementById("asteroidQuantity").innerText = "Asteroid: " + Math.round(asteroid);
+    document.getElementById("asteroidQuantity").innerText = "Asteroid Amount: " + Math.round(asteroid);
 }
 
 
@@ -419,11 +635,22 @@ function updateAsteroid(){
 
 function updateSpaceDustSkillPoint() {
     // Simulate gaining a skill perk
-    console.log("Gained a skill for SpaceDust skill tree!");
+    console.log("Gained a skill point for SpaceDust skill tree!");
     
     document.getElementById("spaceDustSkillPoints").innerText = "SpaceDust Skill Points: " + Math.round(spaceDustSkillPoint);
+    document.getElementById("spaceDustSkillPointsSpent").innerText = Math.round(totalSpaceDustSkillPoint-spaceDustSkillPoint)+" SpaceDust Skill Points Spent" ;
     
 }
+
+function updateCelestialObjectSkillPoint() {
+    // Simulate gaining a skill perk
+    console.log("Gained a skill point for CelestialObject skill tree!");
+    
+    document.getElementById("celestialObjectSkillPoints").innerText = "CelestialObject Skill Points: " + Math.round(celestialObjectSkillPoint);
+    document.getElementById("celestialObjectSkillPointsSpent").innerText = Math.round(totalCelestialObjectSkillPoint-celestialObjectSkillPoint)+" CelestialObject Skill Points Spent" ;
+}
+
+
 
 
 
@@ -445,9 +672,17 @@ function updateSpaceDustXPBar() {
     if (xpPercentage > 100) xpPercentage = 100; // Cap at 100%
     // updateSpaceDustXPBar(xpPercentage);
     document.getElementById("spaceDustXpFill").style.width = xpPercentage + "%";
+    updateSpaceDustSkillPoint();
 }
 
-
+function updateCelestialObjectXPBar() {
+    let maxXp = 5 * Math.pow(3, celestialObjectLevel - 1); // Max XP for the current level
+    let xpPercentage = (xpCelestialObject / maxXp) * 100;
+    if (xpPercentage > 100) xpPercentage = 100; // Cap at 100%
+    // updateSpaceDustXPBar(xpPercentage);
+    document.getElementById("celestialObjectXpFill").style.width = xpPercentage + "%";
+    updateCelestialObjectSkillPoint();
+}
 
 
 
@@ -467,7 +702,9 @@ function updateSpaceDustCurrentLevel() {
     document.getElementById("spaceDustCurrentLevel").innerText = "SpaceDust Level: " + spaceDustLevel;
 }
 
-
+function updateCelestialObjectCurrentLevel() {
+    document.getElementById("celestialObjectCurrentLevel").innerText = "CelestialObject Level: " + celestialObjectLevel;
+}
 
 
 
@@ -535,7 +772,7 @@ function autoGenerateComet() {
         comet += autoGenerateCometRate;
     totalComet += autoGenerateCometRate;
 
-    xp += autoGenerateCometRate / 5;
+    xpCelestialObject += autoGenerateCometRate / 5;
     spaceDust-= autoGenerateCometRate*10;
     }
 
@@ -695,6 +932,23 @@ function checkSpaceDustLevelUp() {
     updateSpaceDustXPBar();
 }
 
+function checkCelestialObjectLevelUp() {
+    let maxXp = 5 * Math.pow(3, celestialObjectLevel - 1); // Max XP for the current level
+    if (xpCelestialObject >= maxXp) {
+        celestialObjectLevel++;
+        xpCelestialObject = 0;
+        celestialObjectSkillPoint++;
+        totalCelestialObjectSkillPoint++;
+        alert("Congratulations! You've reached level " + celestialObjectLevel + " in Celestial Object Tree. You gained 1 skill point.");
+        // You can add more logic here to handle perk allocation in a perk tree
+        updateCelestialObjectCurrentLevel();
+        updateCelestialObjectSkillPoint();
+    }
+    updateCelestialObjectXPBar();
+}
+
+
+
 
 
 
@@ -773,8 +1027,13 @@ function tick() {
     autoGenerateAsteroid();
     checkLevelUp();
     updateXPBar();
+
     checkSpaceDustLevelUp();
     updateSpaceDustXPBar();
+
+    checkCelestialObjectLevelUp();
+    updateCelestialObjectXPBar();
+
     spaceDustConsumption();
     cometConsumption();
 }
