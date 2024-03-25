@@ -14,6 +14,7 @@ let autoGenerateAsteroidRate = 0;
 
 let clickPowerUpgradeCost = 10;
 let autoGenerateUpgradeCostSpaceDust = 20;
+let falseautoGenerateUpgradeCostSpaceDust = 20;
 let autoGenerateUpgradeCostComet= 500;
 let autoGenerateUpgradeCostAsteroid = 500;
 
@@ -22,9 +23,11 @@ let autoGenerateAsteroidEnabled = true;
 
 let xp = 0;
 let level = 1;
-let perkPoints = 200;
+// let perkPoints = 200;
 
-let spaceDustSkillPoint = 10;
+let spaceDustSkillPoint = 1000;
+let totalSpaceDustSkillPoint = 1000;
+
 let celestialObjectSkillPoint = 0;
 
 
@@ -47,7 +50,8 @@ let spaceDustSkillByTier = [
                 effect: 3/100,
                 innerLevel: 0,
                 maxInnerLevel: 5,
-                spaceDustSkillPointCost: 1
+                spaceDustSkillPointCost: 1,
+                unlockCondition: 0
             },
             {
                 name: "Enhance DustSpace auto Rate",
@@ -55,17 +59,19 @@ let spaceDustSkillByTier = [
                 effect: 1,
                 innerLevel: 0,
                 maxInnerLevel: 5,
-                spaceDustSkillPointCost: 1
+                spaceDustSkillPointCost: 1,
+                unlockCondition: 0
             }
         ],
         skillTierB: [
             {
-                name: "Unlock New Space Element: Comet",
+                name: "Comet",
                 description: "Unlock Comet",
+                // isUnlocked: false,
                 innerLevel: 0,
                 maxInnerLevel: 1,
-                spaceDustLevelRequired: 5,
-                spaceDustSkillPointCost: 3
+                spaceDustSkillPointCost: 3,
+                unlockCondition: 5
             }
         ],
         skillTierA: [
@@ -75,15 +81,19 @@ let spaceDustSkillByTier = [
                 effect: 2/100,
                 innerLevel: 0,
                 maxInnerLevel: 10,
-                spaceDustSkillPointCost: 1
+                spaceDustSkillPointCost: 1,
+                isUnlocked: false,
+                unlockCondition: 5
             },
             {
-                name: "Unlock New Space Element: Astroïds",
+                name: "Astroïds",
                 description: "Unlock Asteroïds",
+                isUnlocked: false,
                 innerLevel: 0,
                 maxInnerLevel: 1,
-                spaceDustLevelRequired: 15,
-                spaceDustSkillPointCost: 5
+                spaceDustSkillPointCost: 5,
+                // isUnlocked: false,
+                unlockCondition: 10
             }
         ],
         skillTierS: [
@@ -93,7 +103,9 @@ let spaceDustSkillByTier = [
                 effect: 1/100,
                 maxInnerLevel: "infinity",
                 innerLevel: 0,
-                spaceDustSkillPointCost: 1
+                spaceDustSkillPointCost: 1,
+                isUnlocked: false,
+                unlockCondition: 15
             },
         ]
     }
@@ -140,6 +152,53 @@ let solarSystemSkill = [
         tier: "C",
     }
 ]
+
+
+
+
+
+// // Function to update skill tree UI
+// function updateSkillTreeUI() {
+//     // Implement UI update logic here
+    
+// }
+
+// Function to handle skill point allocation
+function allocateSpaceDustSkillPoint(skill) {
+    if (totalSpaceDustSkillPoint >= skill.spaceDustSkillPointCost) {
+        spaceDustSkillPoint -= skill.spaceDustSkillPointCost;
+        skill.innerLevel++;
+        if(skill.innerLevel === skill.maxInnerLevel && skill.name==="Comet") {
+            cometUnlocked = true;
+            unlockComet();
+        }
+        if(skill.innerLevel === skill.maxInnerLevel && skill.name==="Astroïds") {
+            asteroidsUnlocked = true;
+            unlockAsteroid();
+        }
+        // updateSkillTreeUI();
+    } else {
+        alert("Insufficient skill points!");
+    }
+}
+
+// Function to unlock new tiers based on skill points spent
+function unlockSkillLogic(unlockCondition, skill) {
+    if ((totalSpaceDustSkillPoint-spaceDustSkillPoint) >= unlockCondition && spaceDustSkillPoint >= skill.spaceDustSkillPointCost) {
+        isUnlocked: true;
+        allocateSpaceDustSkillPoint(skill);
+        return true;
+    }
+
+}
+
+// // Update UI initially
+// updateSkillTreeUI();
+
+
+
+
+
 
 function showSpaceDustColumn() {
     let ssd = document.getElementById("spaceDustSkill");
@@ -199,16 +258,16 @@ function createSkillElement(skill) {
     skillDiv.innerHTML = `
         <button id="${skill.name.replace(/\s+/g, '-').toLowerCase()}" class="button btn btn-secondary" data-toggle="tooltip" style="position: relative; background-color: #808080;">${skill.name} (${skill.innerLevel}/${skill.maxInnerLevel})</button>
         <span class="hover-text">${skill.description}</span>`
-        if (skill.spaceDustLevelRequired){
-            skillDiv.innerHTML += `<br><span class="hover-text">Space Dust Level Required: ${skill.spaceDustLevelRequired}</span>`
+        if (skill.unlockCondition>0){
+            skillDiv.innerHTML += `<br><span class="hover-text">you must spend another (${skill.unlockCondition} Space Dust Skill points to unlock this skill</span>`
         };
     
     // Add click event listener to the button
     skillDiv.querySelector("button").addEventListener("click", function() {
-        
-        if(skill.maxInnerLevel === "infinity"){
 
-            skill.innerLevel ++;
+        if(skill.maxInnerLevel === "infinity" && unlockSkillLogic(skill.unlockCondition, skill)){
+            console.log()
+
             this.textContent = `${skill.name} (${skill.innerLevel})`;
             if(skill.innerLevel>0){
                 let fillPercentage = 100;
@@ -217,8 +276,8 @@ function createSkillElement(skill) {
             
         
         }
-        if (skill.innerLevel < skill.maxInnerLevel) {
-            skill.innerLevel++;
+        if (skill.innerLevel < skill.maxInnerLevel && unlockSkillLogic(skill.unlockCondition, skill)) {
+
             // Update button text to reflect new inner level
             
                 this.textContent = `${skill.name} (${skill.innerLevel}/${skill.maxInnerLevel})`;
@@ -227,7 +286,11 @@ function createSkillElement(skill) {
             // Update button background color to represent fill level
             let fillPercentage = (skill.innerLevel / skill.maxInnerLevel) * 100;
             this.style.background = `linear-gradient(to top, #4CAF50 ${fillPercentage}%, #808080 ${fillPercentage}%)`;
+            if(cometUnlocked = false && skill.innerLevel === 1 && skill.name === "Comet"){
+                unlockComet();
+            }
         }
+        
     });
     
     return skillDiv;
@@ -348,15 +411,15 @@ function updateAsteroid(){
 
 
 
-function updatePerkPoints() {
-    console.log(perkPoints);
-    document.getElementById("perkPoints").innerText = "Perk Points: " + Math.round(perkPoints);
-    console.log(perkPoints);
-}
+// function updatePerkPoints() {
+//     console.log(perkPoints);
+//     document.getElementById("perkPoints").innerText = "Perk Points: " + Math.round(perkPoints);
+//     console.log(perkPoints);
+// }
 
 function updateSpaceDustSkillPoint() {
     // Simulate gaining a skill perk
-    console.log("Gained a skill perk for SpaceDust skill tree!");
+    console.log("Gained a skill for SpaceDust skill tree!");
     
     document.getElementById("spaceDustSkillPoints").innerText = "SpaceDust Skill Points: " + Math.round(spaceDustSkillPoint);
     
@@ -560,7 +623,15 @@ function upgradeAutoGenerateSpaceDust() {
     if (spaceDust >= autoGenerateUpgradeCostSpaceDust) {
         spaceDust -= autoGenerateUpgradeCostSpaceDust;
         autoGenerateSpaceDustRate++;
-        autoGenerateUpgradeCostSpaceDust = Math.round(autoGenerateUpgradeCostSpaceDust * 1.1); // Increase cost for next upgrade
+        let reductionAutoGenerateUpgradeCostSpaceDust = 1-(spaceDustSkillByTier[0].skillTierC[0].innerLevel * 0.03)-(spaceDustSkillByTier[0].skillTierA[0].innerLevel * 0.02);
+
+        for (let i = 0; i<=spaceDustSkillByTier[0].skillTierS[0].innerLevel; i++) {
+            reductionAutoGenerateUpgradeCostSpaceDust = reductionAutoGenerateUpgradeCostSpaceDust - (reductionAutoGenerateUpgradeCostSpaceDust*0.01);
+        }
+        console.log(reductionAutoGenerateUpgradeCostSpaceDust)
+        //false ici cest prix sans reduction
+        falseautoGenerateUpgradeCostSpaceDust = (Math.round(falseautoGenerateUpgradeCostSpaceDust * 1.1)); // Increase cost for next upgrade
+        autoGenerateUpgradeCostSpaceDust = (Math.round(falseautoGenerateUpgradeCostSpaceDust * 1.1)*(reductionAutoGenerateUpgradeCostSpaceDust));
         document.getElementById("autoGenerateUpgrade").innerText = "Upgrade Auto Generation (Cost: " + autoGenerateUpgradeCostSpaceDust + " Space Dust)";
         document.getElementById("autoGenerateDisplay").innerText = autoGenerateSpaceDustRate + " per second";
         updateSpaceDust();
@@ -600,11 +671,11 @@ function checkLevelUp() {
     if (xp >= maxXp) {
         level++;
         xp = 0;
-        perkPoints++;
-        alert("Congratulations! You've reached level " + level + ". You gained 1 perk point.");
+        // perkPoints++;
+        alert("Congratulations! You've reached level " + level);
         // You can add more logic here to handle perk allocation in a perk tree
         updateCurrentLevel();
-        updatePerkPoints();
+        // updatePerkPoints();
     }
     updateXPBar();
 }
@@ -615,6 +686,7 @@ function checkSpaceDustLevelUp() {
         spaceDustLevel++;
         xpSpaceDust = 0;
         spaceDustSkillPoint++;
+        totalSpaceDustSkillPoint++;
         alert("Congratulations! You've reached level " + spaceDustLevel + " in Space Dust Tree. You gained 1 skill point.");
         // You can add more logic here to handle perk allocation in a perk tree
         updateSpaceDustCurrentLevel();
@@ -634,35 +706,47 @@ function checkSpaceDustLevelUp() {
 
 // Function to unlock Comet perk
 function unlockComet() {
-    if (perkPoints >= 10 && !cometUnlocked) {
-        cometUnlocked = true;
-        perkPoints -= 10;
-        document.getElementById("perkPoints").innerText = "Perk Points: " + perkPoints;
-        alert("You've unlocked Comet!");
+    // if (spaceDustSkillByTier[0].skillTierB[0].innerLevel === spaceDustSkillByTier[0].skillTierB[0].maxInnerLevel 
+    //     // && !cometUnlocked
+    //     ) {
+        document.getElementById("spaceDustSkillPoints").innerText = "Space Dust Skill Points: " + spaceDustSkillPoint;
+        alert("You've unlocked Comet! Check in Space Element page to see the effect!");
         // Add functionality to space elements for Comet
         // For now, let's just display a message
-        alert("Comet effect applied!");
         document.getElementById("cometGenerator").classList.remove("hide");
-    } else {
-        alert("You don't have enough perk points to unlock Comet or it's already unlocked.");
-    }
+    // } else {
+        // alert("You don't have enough perk points to unlock Comet or it's already unlocked.");
+    // }
 }
+
+// function isCometUnlocked () {
+    
+// }
 
 // Function to unlock asteroids perk
 function unlockAsteroid() {
-    if (perkPoints >= 30 && !asteroidsUnlocked) {
-        asteroidsUnlocked = true;
-        perkPoints -= 30;
-        document.getElementById("perkPoints").innerText = "Perk Points: " + perkPoints;
-        alert("You've unlocked Asteroids!");
+    // if (perkPoints >= 30 && !asteroidsUnlocked) {
+        // asteroidsUnlocked = true;
+        // perkPoints -= 30;
+        document.getElementById("spaceDustSkillPoints").innerText = "Space Dust Skill Points: " + spaceDustSkillPoint;
+        alert("You've unlocked Asteroids! Check in Space Element page to see the effect!");
         // Add functionality to space elements for asteroids
         // For now, let's just display a message
-        alert("Asteroids effect applied!");
+        // alert("Asteroids effect applied!");
         document.getElementById("asteroidGenerator").classList.remove("hide");
-    } else {
-        alert("You don't have enough perk points to unlock Asteroids or it's already unlocked.");
-    }
+    // } else {
+    //     alert("You don't have enough perk points to unlock Asteroids or it's already unlocked.");
+    // }
 }
+
+
+
+
+
+
+
+
+
 
 // Event listeners for unlocking perks
 

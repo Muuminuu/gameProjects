@@ -156,9 +156,9 @@
     .perk.selected {
         border: 2px solid #00f;
     }
-    #perkPoints {
+    /* #perkPoints {
         position: absolute;
         top: 10px;
         right: 10px;
         font-weight: bold;
-    }
+    } */
