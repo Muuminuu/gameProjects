@@ -42,18 +42,20 @@ let spaceDustSkillByTier = [
     {
         skillTierC: [
             {
-                name: "Reduce AutoGenerateRate Upgrade Cost 0/5",
-                description: "Reduce upgrade cost by 5%",
+                name: "Reduce AutoGenerateRate Upgrade Cost",
+                description: "Reduce upgrade cost by 3%",
+                effect: 3/100,
                 innerLevel: 0,
                 maxInnerLevel: 5,
-                skillPointRequired: 0,
+                spaceDustSkillPointCost: 1
             },
             {
-                name: "Add +1 to DustSpace auto Rate",
-                description: "This button adds 0 out of 5 items",
+                name: "Enhance DustSpace auto Rate",
+                description: "Add +1 to DustSpace auto Rate",
+                effect: 1,
                 innerLevel: 0,
                 maxInnerLevel: 5,
-                skillPointRequired: 0,
+                spaceDustSkillPointCost: 1
             }
         ],
         skillTierB: [
@@ -62,30 +64,37 @@ let spaceDustSkillByTier = [
                 description: "Unlock Comet",
                 innerLevel: 0,
                 maxInnerLevel: 1,
-                skillPointRequired: 0,
-                spaceDustLevelRequired: 5
-                
+                spaceDustLevelRequired: 5,
+                spaceDustSkillPointCost: 3
             }
         ],
         skillTierA: [
             {
-                name: "Reduce AutoGenerateRate Upgrade Cost 0/5",
-                skillPointRequired: 0,
-                description: "This button adds 0 out of 5 items" ,
+                name: "Reduce AutoGenerateRate Upgrade Cost",
+                description: "Reduce upgrade cost by 2%",
+                effect: 2/100,
                 innerLevel: 0,
-                maxInnerLevel: 5,
-                
-            }
-        ],
-        skillTierS: [
+                maxInnerLevel: 10,
+                spaceDustSkillPointCost: 1
+            },
             {
                 name: "Unlock New Space Element: Astroïds",
                 description: "Unlock Asteroïds",
                 innerLevel: 0,
                 maxInnerLevel: 1,
-                skillPointRequired: 0,
-                spaceDustLevelRequired: 15
+                spaceDustLevelRequired: 15,
+                spaceDustSkillPointCost: 5
             }
+        ],
+        skillTierS: [
+            {
+                name: "Reduce AutoGenerateRate Upgrade Cost",
+                description: "Reduce upgrade cost by 1%",
+                effect: 1/100,
+                maxInnerLevel: "infinity",
+                innerLevel: 0,
+                spaceDustSkillPointCost: 1
+            },
         ]
     }
 ]
@@ -196,10 +205,25 @@ function createSkillElement(skill) {
     
     // Add click event listener to the button
     skillDiv.querySelector("button").addEventListener("click", function() {
+        
+        if(skill.maxInnerLevel === "infinity"){
+
+            skill.innerLevel ++;
+            this.textContent = `${skill.name} (${skill.innerLevel})`;
+            if(skill.innerLevel>0){
+                let fillPercentage = 100;
+                this.style.background = `linear-gradient(to top, #4CAF50 ${fillPercentage}%, #808080 ${fillPercentage}%)`;
+            }
+            
+        
+        }
         if (skill.innerLevel < skill.maxInnerLevel) {
             skill.innerLevel++;
             // Update button text to reflect new inner level
-            this.textContent = `${skill.name} (${skill.innerLevel}/${skill.maxInnerLevel})`;
+            
+                this.textContent = `${skill.name} (${skill.innerLevel}/${skill.maxInnerLevel})`;
+            
+            
             // Update button background color to represent fill level
             let fillPercentage = (skill.innerLevel / skill.maxInnerLevel) * 100;
             this.style.background = `linear-gradient(to top, #4CAF50 ${fillPercentage}%, #808080 ${fillPercentage}%)`;
