@@ -293,8 +293,6 @@ let solarSystemSkillByTier = [
 
 
 
-
-
 // // Function to update skill tree UI
 // function updateSkillTreeUI() {
 //     // Implement UI update logic here
@@ -465,6 +463,7 @@ function showSpaceDustSkillByTier() {
 
 // let spacedustSkillPointToReachSkill = unlockCondition-(totalSpaceDustSkillPoint-spaceDustSkillPoint);
 function createSkillElement(skill) {
+    
     let skillDiv = document.createElement("div");
     skillDiv.classList.add("skillInformation", "col-6", "text-center");
     skillDiv.innerHTML = `
@@ -477,7 +476,7 @@ function createSkillElement(skill) {
     
     // Add click event listener to the button
     skillDiv.querySelector("button").addEventListener("click", function() {
-
+console.log(skill);
         if(skill.maxInnerLevel === "infinity" && unlockSpaceDustSkillLogic(skill.unlockCondition, skill)){
             this.textContent = `${skill.name} (${skill.innerLevel})`;
             if(skill.innerLevel>0){
@@ -508,10 +507,9 @@ function createSkillElement(skill) {
 }
 
 showSpaceDustSkillByTier();
-
+showSpaceDustColumn();
 
 //////////////////////////// end of spaceDust skilltree //////////////////////////////////
-
 
 
 
@@ -611,7 +609,6 @@ function createCelestialObjectSkillElement(skill) {
 }
 
 showCelestialObjectSkillByTier();
-
 
 
 //////////////////////////// end celestialObject skilltree //////////////////////////////////
@@ -1172,6 +1169,9 @@ function unlockComet() {
     // } else {
         // alert("You don't have enough perk points to unlock Comet or it's already unlocked.");
     // }
+
+        document.getElementById("celestialObjectBranch").classList.remove("hide");
+    ///// here idea :  make that this unlock make the celestialobjectbranch unlocked- make it locked  until you unlock comet
 }
 
 // function isCometUnlocked () {
