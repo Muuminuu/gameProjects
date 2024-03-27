@@ -14,16 +14,23 @@ let autoGenerateSpaceDustRate= 1;
 let addSpaceDustRate = 0;
 // Set auto generation rate to 20 per second
 let autoGenerateCometRate = 0;
+let addCometRate = 0;
+
 let autoGenerateAsteroidRate = 0;
+let addAsteroidRate = 0;
+
 let autoGenerateNebulaRate = 0;
+let addNebulaRate = 0;
 
 let clickPowerUpgradeCost = 10;
 let autoGenerateUpgradeCostSpaceDust = 20;
 let falseautoGenerateUpgradeCostSpaceDust = 20;
 
 let autoGenerateUpgradeCostComet= 500;
+let falseautoGenerateUpgradeCostComet = 500;
 
 let autoGenerateUpgradeCostAsteroid = 500;
+let falseautoGenerateUpgradeCostAsteroid = 500;
 
 let autoGenerateUpgradeCostNebula = 500;
 let falseautoGenerateUpgradeCostNebula = 500;
@@ -66,7 +73,7 @@ let spaceDustSkillByTier = [
     {
         skillTierC: [
             {
-                name: "Reduce AutoGenerateRate Upgrade Cost",
+                name: "Reduce SpaceDust AutoGenerateRate Upgrade Cost",
                 description: "Reduce upgrade cost by 3%",
                 effect: 3/100,
                 innerLevel: 0,
@@ -97,7 +104,7 @@ let spaceDustSkillByTier = [
         ],
         skillTierA: [
             {
-                name: "Reduce AutoGenerateRate Upgrade Cost",
+                name: "Reduce SpaceDust AutoGenerateRate Upgrade Cost",
                 description: "Reduce upgrade cost by 2%",
                 effect: 2/100,
                 innerLevel: 0,
@@ -119,7 +126,7 @@ let spaceDustSkillByTier = [
         ],
         skillTierS: [
             {
-                name: "Reduce AutoGenerateRate Upgrade Cost",
+                name: "Reduce SpaceDust AutoGenerateRate Upgrade Cost",
                 description: "Reduce upgrade cost by 1%",
                 effect: 1/100,
                 maxInnerLevel: "infinity",
@@ -132,11 +139,20 @@ let spaceDustSkillByTier = [
     }
 ]
 
+
+
+
+
+
+
+
+
+
 let celestialObjectSkillByTier = [
     {
     skillTierC: [
         {
-            name: "celestialObject Reduce AutoGenerateRate Upgrade Cost",
+            name: "Reduce Comet AutoGenerateRate Upgrade Cost",
             description: "Reduce upgrade cost by 3%",
             effect: 3/100,
             innerLevel: 0,
@@ -145,11 +161,11 @@ let celestialObjectSkillByTier = [
             unlockCondition: 0
         },
         {
-            name: "celestialObject Enhance DustSpace auto Rate",
-            description: "Add +1 to DustSpace auto Rate",
+            name: "Increase Comet Auto Rate",
+            description: "Add +1 to Comet auto Rate",
             effect: 1,
             innerLevel: 0,
-            maxInnerLevel: 5,
+            maxInnerLevel: "infinity",
             celestialObjectSkillPointCost: 1,
             unlockCondition: 0
         }
@@ -167,29 +183,29 @@ let celestialObjectSkillByTier = [
     ],
     skillTierA: [
         {
-            name: "Reduce AutoGenerateRate Upgrade Cost",
-            description: "Reduce upgrade cost by 2%",
-            effect: 2/100,
+            name: "Reduce Comet AutoGenerateRate Upgrade Cost",
+            description: "Reduce upgrade cost by 1%",
+            effect: 1/100,
             innerLevel: 0,
-            maxInnerLevel: 10,
+            maxInnerLevel: "infinity",
             celestialObjectSkillPointCost: 1,
             isUnlocked: false,
             unlockCondition: 5
         },
         {
-            name: "Asteroïds",
+            name: "Increase Asteroid Auto Rate",
             description: "Unlock Asteroïds",
             isUnlocked: false,
             innerLevel: 0,
-            maxInnerLevel: 1,
-            celestialObjectSkillPointCost: 5,
+            maxInnerLevel: "infinity",
+            celestialObjectSkillPointCost: 1,
             // isUnlocked: false,
             unlockCondition: 10
         }
     ],
     skillTierS: [
         {
-            name: "Reduce AutoGenerateRate Upgrade Cost",
+            name: "Reduce Asteroid AutoGenerateRate Upgrade Cost",
             description: "Reduce upgrade cost by 1%",
             effect: 1/100,
             maxInnerLevel: "infinity",
@@ -290,9 +306,9 @@ let solarSystemSkillByTier = [
 
 
 
-function updateActualRate($id, $skillTreeConcerned) {
-    document.getElementById($id).innerText = (autoGenerate+{$skillTreeConcerned}+Rate + defineAmountSkillAddSpaceDust()) + " per second";
-}
+// function updateActualRate($id, $skillTreeConcerned) {
+//     document.getElementById($id).innerText = (autoGenerate+{$skillTreeConcerned}+Rate + defineAmountSkillAddSpaceDust()) + " per second";
+// }
 
 
 
@@ -481,7 +497,6 @@ function createSkillElement(skill) {
     
     // Add click event listener to the button
     skillDiv.querySelector("button").addEventListener("click", function() {
-console.log(skill);
         if(skill.maxInnerLevel === "infinity" && unlockSpaceDustSkillLogic(skill.unlockCondition, skill)){
             this.textContent = `${skill.name} (${skill.innerLevel})`;
             if(skill.innerLevel>0){
@@ -763,11 +778,6 @@ function updateNebula(){
 
 
 
-// function updatePerkPoints() {
-//     console.log(perkPoints);
-//     document.getElementById("perkPoints").innerText = "Perk Points: " + Math.round(perkPoints);
-//     console.log(perkPoints);
-// }
 
 function updateSpaceDustSkillPoint() {
     // Simulate gaining a skill perk
@@ -903,6 +913,27 @@ function defineAmountSkillAddSpaceDust() {
 // "autoGenerateDisplay"
 
 
+
+function defineAmountSkillAddComet() {
+    // Add Comet
+    addCometRate = celestialObjectSkillByTier[0].skillTierC[1].innerLevel * 1;
+    return addCometRate;
+    
+}
+
+
+function defineAmountSkillAddAsteroid() {
+    // Add CelestialObject
+    addAsteroidRate = celestialObjectSkillByTier[0].skillTierA[1].innerLevel * 1;
+    return addAsteroidRate;
+    
+}
+
+
+
+
+
+
 // Function to handle auto-generating space dust
 function autoGenerateSpaceDust() {
 
@@ -965,7 +996,7 @@ function autoGenerateAsteroid() {
         asteroid += autoGenerateAsteroidRate;
         totalAsteroid += autoGenerateAsteroidRate;
 
-        xpSolarSystem += autoGenerateAsteroidRate / 5;
+        xpCelestialObject += autoGenerateAsteroidRate / 5;
         comet-= autoGenerateAsteroidRate*10;
     }
 
@@ -990,7 +1021,7 @@ function autoGenerateNebula() {
         nebula += autoGenerateNebulaRate;
         totalNebula += autoGenerateNebulaRate;
 
-        xpSolarSystem += autoGenerateNebulaRate / 5;
+        xpCelestialObject += autoGenerateNebulaRate / 5;
         spaceDust-= autoGenerateNebulaRate*10;
         comet -= autoGenerateNebulaRate*10;
         asteroid -= autoGenerateNebulaRate*10;
@@ -1072,7 +1103,6 @@ function upgradeAutoGenerateSpaceDust() {
         for (let i = 0; i<=spaceDustSkillByTier[0].skillTierS[0].innerLevel; i++) {
             reductionAutoGenerateUpgradeCostSpaceDust = reductionAutoGenerateUpgradeCostSpaceDust - (reductionAutoGenerateUpgradeCostSpaceDust*0.01);
         }
-        console.log(reductionAutoGenerateUpgradeCostSpaceDust)
         //false ici cest prix sans reduction
         falseautoGenerateUpgradeCostSpaceDust = (Math.round(falseautoGenerateUpgradeCostSpaceDust * 1.1)); // Increase cost for next upgrade
         autoGenerateUpgradeCostSpaceDust = (Math.round(falseautoGenerateUpgradeCostSpaceDust * 1.1)*(reductionAutoGenerateUpgradeCostSpaceDust));
@@ -1093,12 +1123,11 @@ function upgradeAutoGenerateNebula() {
         for (let i = 0; i<=celestialObjectSkillByTier[0].skillTierS[0].innerLevel; i++) {
             reductionAutoGenerateUpgradeCostNebula = reductionAutoGenerateUpgradeCostNebula - (reductionAutoGenerateUpgradeCostNebula*0.01);
         }
-        console.log(reductionAutoGenerateUpgradeCostNebula)
         //false ici cest prix sans reduction
         falseautoGenerateUpgradeCostNebula = (Math.round(falseautoGenerateUpgradeCostNebula * 1.1)); // Increase cost for next upgrade
         autoGenerateUpgradeCostNebula = (Math.round(falseautoGenerateUpgradeCostNebula * 1.1)*(reductionAutoGenerateUpgradeCostNebula));
         document.getElementById("autoGenerateUpgradeNebula").innerText = "Upgrade Auto Generation (Cost: " + autoGenerateUpgradeCostNebula + " Space Dust & Comet & Asteroids)";
-        document.getElementById("autoGenerateDisplayNebula").innerText = autoGenerateNebulaRate + " per second";
+        document.getElementById("autoGenerateDisplayNebula").innerText = autoGenerateNebulaRate +" per second";
         updateNebula();
     }
 }
@@ -1107,9 +1136,15 @@ function upgradeAutoGenerateComet() {
     if (spaceDust >= autoGenerateUpgradeCostComet) {
         spaceDust -= autoGenerateUpgradeCostComet;
         autoGenerateCometRate++;
-        autoGenerateUpgradeCostComet = Math.round(autoGenerateUpgradeCostComet * 1.1); // Increase cost for next upgrade
+        let reductionAutoGenerateUpgradeCostComet = 1-(celestialObjectSkillByTier[0].skillTierC[0].innerLevel * 0.03)-(spaceDustSkillByTier[0].skillTierA[0].innerLevel * 0.02);
+
+        for (let i = 0; i<=spaceDustSkillByTier[0].skillTierS[0].innerLevel; i++) {
+            reductionAutoGenerateUpgradeCostComet = reductionAutoGenerateUpgradeCostComet - (reductionAutoGenerateUpgradeCostComet*0.01);
+        }
+        falseautoGenerateUpgradeCostComet = (Math.round(falseautoGenerateUpgradeCostComet * 1.1)); 
+        autoGenerateUpgradeCostComet = Math.round(autoGenerateUpgradeCostComet * 1.1)*(reductionAutoGenerateUpgradeCostComet); // Increase cost for next upgrade
         document.getElementById("autoGenerateUpgradeComet").innerText = "Upgrade Auto Generation (Cost: " + autoGenerateUpgradeCostComet + " Space Dust)";
-        document.getElementById("autoGenerateDisplayComet").innerText ="Current Auto Generation : "+ autoGenerateCometRate + " per second";
+        document.getElementById("autoGenerateDisplayComet").innerText ="Current Auto Generation : "+ (autoGenerateCometRate + defineAmountSkillAddComet()) + " per second";
         updateComet();
     }
 }
@@ -1213,13 +1248,14 @@ function unlockComet() {
         // Add functionality to space elements for Comet
         // For now, let's just display a message
         document.getElementById("cometGenerator").classList.remove("hide");
+        document.getElementById("statisticsCometDiv").classList.remove("hide");
     // } else {
         // alert("You don't have enough perk points to unlock Comet or it's already unlocked.");
     // }
         
         alert("Congratulations ! You have unlocked the Celestial Object Skill Tree.");
+        ///// unlock celestialoject branch
         document.getElementById("celestialObjectBranch").classList.remove("hide");
-    ///// here idea :  make that this unlock make the celestialobjectbranch unlocked- make it locked  until you unlock comet
 }
 
 // function isCometUnlocked () {
@@ -1237,6 +1273,7 @@ function unlockAsteroid() {
         // For now, let's just display a message
         // alert("Asteroids effect applied!");
         document.getElementById("asteroidGenerator").classList.remove("hide");
+        document.getElementById("statisticsAsteroidDiv").classList.remove("hide");
     // } else {
     //     alert("You don't have enough perk points to unlock Asteroids or it's already unlocked.");
     // }
@@ -1253,6 +1290,17 @@ function unlockNebula() {
 
 
 
+
+
+
+
+
+
+function productionStatistics(){
+    document.getElementById("productionSpaceDustStatistics").innerText = Math.round(autoGenerateSpaceDustRate + defineAmountSkillAddSpaceDust());
+    document.getElementById("productionCometStatistics").innerText = Math.round(autoGenerateCometRate + defineAmountSkillAddComet());
+    document.getElementById("productionAsteroidStatistics").innerText = Math.round(autoGenerateAsteroidRate + defineAmountSkillAddAsteroid());
+}
 
 
 
@@ -1300,6 +1348,8 @@ function tick() {
     spaceDustConsumption();
     nebulaSpaceDustConsumption();
     cometConsumption();
+
+    productionStatistics();
 }
 
 // Set up auto-generation
